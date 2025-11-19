@@ -1,0 +1,15 @@
+bin/
+obj/
+.nuke/temp
+.nuke/parameters.local.json
+*.user
+*.idea
+*.DotSettings
+*.received.*
+artifacts/
+publish/
+TestResults/
+build.binlog
+build.binlog-warnings-only.log
+publish.binlog
+publish.binlog-warnings-only.log

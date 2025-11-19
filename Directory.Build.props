@@ -1,0 +1,25 @@
+<Project>
+  <PropertyGroup>
+    <PackageVersion>1.0.0-preview.2.local</PackageVersion>
+    <Authors>hojmark</Authors>
+    <Copyright>Copyright (c) hojmark</Copyright>
+    <PackageProjectUrl>https://github.com/hojmark/labs</PackageProjectUrl>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/hojmark/labs</RepositoryUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <AssemblyName>HLabs.$(MSBuildProjectName)</AssemblyName>
+    <RootNamespace>HLabs.$(MSBuildProjectName)</RootNamespace>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsPackable>false</IsPackable>
+    <AnalysisMode>All</AnalysisMode>
+    <TreatWarningsAsErrors Condition="'$(Configuration)'=='Release'">true</TreatWarningsAsErrors>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="StyleCop.Analyzers" PrivateAssets="all" />
+    <PackageReference Include="SonarAnalyzer.CSharp" PrivateAssets="all" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,14 @@
+<Solution>
+  <Folder Name="/Build/">
+    <Project Path="build/_build.csproj">
+      <Build Project="false" />
+    </Project>
+  </Folder>
+  <Folder Name="/Common/">
+    <File Path="Directory.Build.props" />
+    <File Path="Directory.Packages.props" />
+  </Folder>
+  <Folder Name="/Workflows/" />
+  <Project Path="dotnet/Containers.Tests/Containers.Tests.csproj" />
+  <Project Path="dotnet/Containers/Containers.csproj" />
+</Solution>
