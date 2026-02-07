@@ -1,13 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Runtime.InteropServices;
-using System.Threading.Tasks;
-using JetBrains.Annotations;
 using Nuke.Common;
 using Nuke.Common.Tooling;
-using Nuke.Common.Tools.DotNet;
-using Serilog;
-using static Nuke.Common.Tools.DotNet.DotNetTasks;
 
 // ReSharper disable VariableHidesOuterVariable
 // ReSharper disable AllUnderscoreLocalParameterName

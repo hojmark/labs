@@ -1,13 +1,8 @@
 using System.IO;
-using System.Threading.Tasks;
 using Nuke.Common;
 using Nuke.Common.IO;
 using Nuke.Common.Tools.DotNet;
-using Nuke.Common.Tools.GitHub;
-using Octokit;
 using Serilog;
-using static Nuke.Common.EnvironmentInfo;
-using static Nuke.Common.IO.PathConstruction;
 using static Nuke.Common.Tools.DotNet.DotNetTasks;
 
 // ReSharper disable VariableHidesOuterVariable
