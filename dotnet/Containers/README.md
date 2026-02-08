@@ -2,8 +2,7 @@
 
 Strongly-typed, validated container image references for .NET.
 
-Build, parse, and manipulate Docker/OCI image references (like `docker.io/library/nginx:1.25`) with types that enforce
-correctness at construction time — no more stringly-typed image names scattered across your codebase.
+Build, parse, and manipulate Docker/OCI image references (like `docker.io/library/nginx:1.25`).
 
 ---
 
