@@ -1,88 +1,60 @@
-using Semver;
-
 namespace HLabs.Containers;
 
-public record ImageReference {
-  public required ContainerRegistry Host {
+// TODO support platform
+// TODO docs
+/// <summary>
+/// A fully-qualified container image reference.
+/// <example>
+/// example.com:5000/team/my-app:2.0
+///
+/// Host: example.com:5000
+/// Namespace: team
+/// Repository: my-app
+/// Tag: 2.0
+/// </example>
+/// </summary>
+public sealed partial record ImageReference {
+  public Registry Registry {
     get;
     init;
   }
 
-  public string? Namespace {
+  public Namespace? Namespace {
     get;
     init;
   }
 
-  public required string Repository {
+  public Repository Repository {
+    get;
+  }
+
+  public Tag Tag {
     get;
     init;
   }
 
-  public required Tag Tag {
+  public Digest? Digest {
     get;
     init;
   }
 
-  public static ImageReference Localhost( string repository, SemVersion version ) {
-    return Localhost( repository, Tag.Version( version ) );
-  }
-
-  public static ImageReference Localhost( string repository, Tag tag ) {
-    ValidateOrThrow( repository );
-
-    return new ImageReference { Host = LocalhostRegistry.Instance, Repository = repository, Tag = tag };
-  }
-
-  public static ImageReference DockerIo( string @namespace, string repository, SemVersion version ) {
-    return DockerIo( @namespace, repository, Tag.Version( version ) );
-  }
-
-  public static ImageReference DockerIo( string @namespace, string repository, Tag tag ) {
-    ValidateOrThrow( @namespace, repository );
-
-    return new ImageReference {
-      Host = DockerIoRegistry.Instance, Namespace = @namespace, Repository = repository, Tag = tag
-    };
+  public ImageReference(
+    Repository repository,
+    Tag? tag = null,
+    Registry? host = null,
+    Namespace? @namespace = null,
+    Digest? digest = null
+  ) {
+    Repository = repository;
+    Tag = tag ?? Tag.Latest;
+    Registry = host ?? Registry.DockerHub;
+    Namespace = @namespace ?? ( Registry == Registry.DockerHub ? Namespace.Library : null );
+    Digest = digest;
   }
 
   public override string ToString() {
-    var @namespace = Namespace == null ? string.Empty : $"{Namespace}/";
-    var name = $"{@namespace}{Repository}";
-
-    return $"{Host}/{name}:{Tag}";
-  }
-
-  private static void ValidateOrThrow( string @namespace, string repository ) {
-    if ( @namespace.Contains( '/', StringComparison.InvariantCulture ) ) {
-      throw new ArgumentException( "Contains /", nameof(@namespace) );
-    }
-
-    if ( @namespace.Trim().Length != @namespace.Length ) {
-      throw new ArgumentException( "Contains whitespace", nameof(@namespace) );
-    }
-
-    if ( string.IsNullOrWhiteSpace( @namespace ) ) {
-      throw new ArgumentException( "Cannot be null or empty", nameof(@namespace) );
-    }
-
-    ValidateOrThrow( repository );
-  }
-
-  private static void ValidateOrThrow( string repository ) {
-    if ( repository.Contains( '/', StringComparison.InvariantCulture ) ) {
-      throw new ArgumentException( "Contains /", nameof(repository) );
-    }
-
-    if ( repository.Trim().Length != repository.Length ) {
-      throw new ArgumentException( "Contains whitespace", nameof(repository) );
-    }
-
-    if ( string.IsNullOrWhiteSpace( repository ) ) {
-      throw new ArgumentException( "Cannot be null or empty", nameof(repository) );
-    }
-  }
-
-  public ImageReference WithTag( Tag tag ) {
-    return this with { Tag = tag };
+    var ns = Namespace is null ? string.Empty : $"{Namespace}/";
+    var digest = Digest is null ? string.Empty : $"@{Digest}";
+    return $"{Registry}/{ns}{Repository}:{Tag}{digest}";
   }
 }

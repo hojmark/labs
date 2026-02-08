@@ -232,6 +232,7 @@ dotnet_diagnostic.SA1000.severity = suggestion # Need to configure formatting in
 dotnet_diagnostic.SA1313.severity = suggestion # Rider disagrees?
 
 [**/*.{Tests,E2ETests,ArchTests}*/**.cs]
+dotnet_diagnostic.CA1515.severity = none
 dotnet_diagnostic.CA1852.severity = warning
 dotnet_diagnostic.CA1816.severity = warning
 dotnet_diagnostic.CA2007.severity = none
@@ -242,3 +243,9 @@ dotnet_diagnostic.SA1600.severity = none
 dotnet_diagnostic.SA1118.severity = none
 # Await *Async instead.
 dotnet_diagnostic.S6966.severity = none
+# * creates a new instance of * which is never used
+dotnet_diagnostic.CA1806.severity = suggestion
+# A property should not follow a method
+dotnet_diagnostic.SA1201.severity = none
+# Instance of NullForgiving operator without justification detected
+dotnet_diagnostic.NX0002.severity = suggestion

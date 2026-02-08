@@ -2,39 +2,35 @@ using Semver;
 
 namespace HLabs.Containers;
 
-public record Tag {
-  internal Tag( string value ) {
-    Value = value;
-  }
-
+public sealed partial record Tag {
   private string Value {
     get;
   }
 
-  // Sealed to prevent children from generating their own auto-ToString implementation
-  public sealed override string ToString() {
-    return Value;
-  }
-}
-
-public record LatestTag : Tag {
-  public static readonly LatestTag Instance = new();
-
-  private LatestTag() : base( "latest" ) {
-  }
-}
-
-public static class TagExtensions {
-  // Bug: https://github.com/dotnet/sdk/issues/51681
-#pragma warning disable CA1034
-  extension( Tag ) {
-#pragma warning restore CA1034
-    public static Tag Latest => LatestTag.Instance;
-    public static Tag Dev => new("dev");
-
-    public static Tag Version( SemVersion version ) {
-      ArgumentNullException.ThrowIfNull( version );
-      return new Tag( version.WithoutMetadata().ToString() );
+  public Tag( string value ) {
+    if ( string.IsNullOrWhiteSpace( value ) ) {
+      throw new ArgumentException( "Tag cannot be null or empty", nameof(value) );
     }
+
+    if ( value.Trim().Length != value.Length ) {
+      throw new ArgumentException( "Tag contains leading/trailing whitespace", nameof(value) );
+    }
+
+    Value = value;
   }
+
+  public static implicit operator Tag( string tag ) => FromString( tag );
+
+  public static implicit operator Tag( SemVersion v ) => FromSemVersion( v );
+
+  public static Tag FromString( string tag ) {
+    return new(tag);
+  }
+
+  public static Tag FromSemVersion( SemVersion v ) {
+    // ! Null check is performed by constructor
+    return new(v?.WithoutMetadata().ToString()!);
+  }
+
+  public override string ToString() => Value;
 }

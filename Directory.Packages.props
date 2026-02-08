@@ -13,9 +13,10 @@
   </ItemGroup>
   <ItemGroup>
     <PackageVersion Include="Nuke.Common" Version="9.0.4" />
+    <PackageVersion Include="Nullable.Extended.Analyzer" Version="1.15.6581" />
     <PackageVersion Include="Semver" Version="3.0.0" />
-    <PackageVersion Include="SonarAnalyzer.CSharp" Version="10.15.0.120848" />
+    <PackageVersion Include="SonarAnalyzer.CSharp" Version="10.19.0.132793" />
     <PackageVersion Include="StyleCop.Analyzers" Version="1.1.118" />
-    <PackageVersion Include="TUnit" Version="1.2.11" />
+    <PackageVersion Include="TUnit" Version="1.13.11" />
   </ItemGroup>
 </Project>
