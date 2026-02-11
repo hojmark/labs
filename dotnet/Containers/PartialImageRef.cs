@@ -15,17 +15,6 @@ namespace HLabs.Containers;
 /// Tag: 2.0
 /// </example>
 /// </summary>
-[SuppressMessage(
-  "StyleCop.CSharp.DocumentationRules",
-  "SA1623:Property summary documentation should match accessors",
-  Justification = "Temp"
-)]
-[SuppressMessage( "Design", "CA1031:Do not catch general exception types", Justification = "Temp" )]
-[SuppressMessage( "StyleCop.CSharp.DocumentationRules", "SA1615:Element return value should be documented" )]
-[SuppressMessage( "StyleCop.CSharp.DocumentationRules", "SA1611:Element parameters should be documented" )]
-[SuppressMessage(
-  "StyleCop.CSharp.MaintainabilityRules",
-  "SA1404:Code analysis suppression should have justification" )]
 public sealed partial record PartialImageRef : ImageRef {
   private PartialImageRef(
     Repository repository,
@@ -36,7 +25,6 @@ public sealed partial record PartialImageRef : ImageRef {
     Namespace? @namespace = null,
     Digest? digest = null
   ) : base( repository ) {
-    ArgumentNullException.ThrowIfNull( repository ); // TODO test this
     Tag = tag;
     Registry = registry;
     Namespace = @namespace;
@@ -167,7 +155,7 @@ public sealed partial record PartialImageRef : ImageRef {
   public override bool IsQualified => Registry != null && ( !Registry.NamespaceRequired || Namespace != null ) &&
                                       ( Tag != null || Digest != null );
 
-  public bool CanQualify => TryQualify( out _, out _ ); // TODO Bad impl
+  public bool CanQualify => TryQualify( out _, out _ );
 
   /// <summary>
   /// Converts this reference to a canonical form.

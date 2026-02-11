@@ -62,9 +62,14 @@ dotnet/
 
 - Keep usage examples up to date in project README.md
 - XML docs on all public APIs with `<summary>`, `<param>`, `<returns>`, `<exception>` being required.
-  - Private or internal types and methods do not need XML docs but should still be well-commented if their logic is complex.
+    - If a parameter is non-nullable but is still checked for null, `<exception cref="ArgumentNullException">` should
+      not be documented.
+    - `private`, `internal` and `private protected` types/methods do not need XML docs but should still be
+      well-commented if their logic is complex.
 - Include `<example>` tags showing valid/invalid inputs where appropriate.
+    - A sample digest or image ID (being a sha256 hash) value should be "sha256:abc123"
 - Reference OCI spec sections where applicable
 - Document format specifications clearly
 - Keep documentation up to date with code changes
 - Use Markdown for README and other documentation files
+- Use "container image" over "Docker image"

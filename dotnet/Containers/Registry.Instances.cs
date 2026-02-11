@@ -1,9 +1,24 @@
 namespace HLabs.Containers;
 
 public sealed partial record Registry {
+  /// <summary>
+  /// Docker Hub registry (docker.io). Requires a namespace.
+  /// </summary>
   public static readonly Registry DockerHub = new("docker.io", true);
+
+  /// <summary>
+  /// Quay.io container registry. Requires a namespace.
+  /// </summary>
   public static readonly Registry Quay = new("quay.io", true);
+
+  /// <summary>
+  /// GitHub Container Registry (ghcr.io). Requires a namespace.
+  /// </summary>
   public static readonly Registry GitHub = new("ghcr.io", true);
+
+  /// <summary>
+  /// Local Docker registry (localhost:5000). Does not require a namespace.
+  /// </summary>
   public static readonly Registry Localhost = new("localhost:5000", false);
 
   /// <summary>

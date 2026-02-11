@@ -1,12 +1,24 @@
 namespace HLabs.Containers;
 
+/// <summary>
+/// Extension methods for working with container image references from strings.
+/// </summary>
 public static class StringExtensions {
 #pragma warning disable CA1034
   extension( string imageReference ) {
 #pragma warning restore CA1034
     /// <summary>
-    /// Creates an unqualified container image reference.
+    /// Creates a partial container image reference from a string.
+    /// The string is parsed to extract registry, namespace, repository, tag, and digest components.
     /// </summary>
+    /// <returns>A <see cref="PartialImageRef"/> parsed from the string.</returns>
+    /// <exception cref="FormatException">Thrown when the image reference string is invalid.</exception>
+    /// <example>
+    /// <code>
+    /// var image = "nginx:latest".Image();
+    /// var image = "docker.io/library/nginx:1.25".Image();
+    /// </code>
+    /// </example>
     public PartialImageRef Image() => PartialImageRef.Parse( imageReference );
 /*
     /// <summary>

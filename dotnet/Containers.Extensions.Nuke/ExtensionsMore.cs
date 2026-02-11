@@ -23,9 +23,7 @@ public static class LocalDockerRepositoryExtensions {
     foreach ( var line in lines ) {
       var parts = line.Split( ' ', 2 );
       if ( parts.Length != 2 ) {
-#pragma warning disable CA2201
-        throw new Exception( $"Unexcepted line from docker image ls: '{line}'" );
-#pragma warning restore CA2201
+        throw new FormatException( $"Unexpected line from docker image ls: '{line}'" );
       }
 
       var imageId = parts[0];

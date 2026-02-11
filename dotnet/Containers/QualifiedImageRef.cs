@@ -1,40 +1,19 @@
-using System.Diagnostics.CodeAnalysis;
-
 namespace HLabs.Containers;
 
 // -----------------------------
-// Canonical image reference: fully qualified (registry, namespace, repository, tag or digest)
+// Qualified image reference: fully qualified (registry, namespace, repository, tag or digest)
 // -----------------------------
-[SuppressMessage( "StyleCop.CSharp.DocumentationRules", "SA1615:Element return value should be documented" )]
-[SuppressMessage( "StyleCop.CSharp.DocumentationRules", "SA1611:Element parameters should be documented" )]
-[SuppressMessage(
-  "StyleCop.CSharp.MaintainabilityRules",
-  "SA1404:Code analysis suppression should have justification" )]
 /// <summary>
-/// Mutable image reference.
-/// Can adress an image, but the underlying image may change.
-/// (registry, optional- depends on registy namespace, repository, tag or digest)
+/// Qualified image reference that can address a specific image.
+/// The underlying image may change over time (e.g., tag can be moved).
+/// Requires registry and repository, with namespace depending on registry requirements.
+/// Must have either a tag or digest.
 /// </summary>
 public sealed record QualifiedImageRef : ImageRef {
   public new Registry Registry {
     get;
   }
 
-  /*
-  public Namespace? Namespace {
-    get;
-  } // only required if the registry requires it
-  */
-
-/*
-public Tag? Tag {
-  get;
-} // nullable if digest-only
-
-public Digest? Digest {
-  get;
-} // nullable if tag-only
-*/
   internal QualifiedImageRef( Registry registry, Namespace? ns, Repository repository, Tag? tag, Digest? digest ) :
     base( repository ) {
     Registry = registry ?? throw new ArgumentNullException( nameof(registry) );
@@ -69,9 +48,17 @@ public Digest? Digest {
     return new CanonicalImageRef( Registry, Namespace, Repository, digest );
   }
 
+  /// <summary>
+  /// Creates a pinned image reference using the current digest.
+  /// </summary>
+  /// <exception cref="InvalidOperationException">Thrown when digest is not present.</exception>
   public CanonicalImageRef Canonicalize() {
-    // ! TODO:
-    return Canonicalize( Digest! );
+    if ( Digest is null ) {
+      throw new InvalidOperationException(
+        "Cannot canonicalize without a digest. Use Canonicalize(digest) to provide one." );
+    }
+
+    return new CanonicalImageRef( Registry, Namespace, Repository, Digest );
   }
 
   public override bool IsQualified => true;

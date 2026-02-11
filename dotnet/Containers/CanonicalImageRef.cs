@@ -1,36 +1,17 @@
-using System.Diagnostics.CodeAnalysis;
-
 namespace HLabs.Containers;
 
-[SuppressMessage( "StyleCop.CSharp.DocumentationRules", "SA1615:Element return value should be documented" )]
-[SuppressMessage( "StyleCop.CSharp.DocumentationRules", "SA1611:Element parameters should be documented" )]
-[SuppressMessage(
-  "StyleCop.CSharp.MaintainabilityRules",
-  "SA1404:Code analysis suppression should have justification" )]
 /// <summary>
 /// Content-addressable (immutable) image reference.
+/// Guaranteed to resolve to the same image content due to digest pinning.
 /// </summary>
 public sealed record CanonicalImageRef : ImageRef {
   public new Registry Registry {
     get;
   }
 
-  /* public Namespace? Namespace {
-     get;
-   }*/
-
-  /*public Repository Repository {
-    get;
-  }*/
-
   public new Digest Digest {
     get;
   }
-
-  /*public Tag? Tag {
-    get;
-  } // optional cosmetic / informational tag
-  */
 
   internal CanonicalImageRef(
     Registry registry,
@@ -61,7 +42,6 @@ public sealed record CanonicalImageRef : ImageRef {
   /// Returns a new instance with a different namespace.
   /// </summary>
   public CanonicalImageRef WithNamespace( Namespace ns ) =>
-    // TODO remember registry/namespace requirement
     new(Registry, ns, Repository, Digest, Tag);
 
   public override bool IsQualified => true;
