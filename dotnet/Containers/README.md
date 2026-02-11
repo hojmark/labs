@@ -18,7 +18,7 @@ dotnet add package HLabs.Containers
 
 ```csharp
 var image = new ImageReference("nginx");
-Console.WriteLine(image); // docker.io/library/nginx:latest
+Console.WriteLine(image); // docker.io/library/nginx
 ```
 
 ### Building references
@@ -32,6 +32,26 @@ var image = new ImageReference(new Repository("nginx"), new Tag("trixie")); // �
 
 // Semantic Versioning support (via the Semver package)
 var image = new ImageReference("myapp", new SemVersion(3, 1, 0), Registry.GitHub, "myorg"); // → ghcr.io/myorg/myapp:3.1.0
+
+
+
+
+
+// Minimal — no tag, no digest
+var image = new ImageReference("nginx"); // → docker.io/library/nginx
+
+// With an explicit tag
+var image = new ImageReference("nginx", Tag.Latest); // → docker.io/library/nginx:latest var image = new ImageReference("nginx", "trixie"); // → docker.io/library/nginx:trixie
+
+// Digest-only (no tag)
+var image = new ImageReference("nginx", digest: new Digest("sha256:a3ed95caeb02...")); // → docker.io/library/nginx@sha256:a3ed95caeb02...
+
+// Tag + digest
+var image = new ImageReference("nginx", "trixie", digest: new Digest("sha256:a3ed95caeb02...")); // → docker.io/library/nginx:trixie@sha256:a3ed95caeb02...
+
+// Semantic Versioning support (via the Semver package)
+var image = new ImageReference("myapp", new SemVersion(3, 1, 0), Registry.GitHub, "myorg"); // → ghcr.io/myorg/myapp:3.1.0
+
 ```
 
 ### Parsing references
@@ -42,6 +62,27 @@ Console.WriteLine(image.Registry); // ghcr.io
 Console.WriteLine(image.Namespace); // myorg
 Console.WriteLine(image.Repository); // myapp
 Console.WriteLine(image.Tag); // 3.1.0
+
+// Tag is null when not present in the input
+var image = ImageReference.Parse("docker.io/library/nginx@sha256:abc123");
+Console.WriteLine(image.Tag); // (null)
+Console.WriteLine(image.Digest); // sha256:abc123
+```
+
+### `IsCanonical` and `IsImmutable`
+
+```csharp
+var bare = new ImageReference("nginx"); // no tag, no digest
+bare.IsCanonical; // false — not enough info to identify a specific image
+bare.IsImmutable; // false
+
+var tagged = new ImageReference("nginx", Tag.Latest); // tag only
+tagged.IsCanonical; // true — tag resolves to an image (but may change over time)
+tagged.IsImmutable; // false — tags are mutable; "latest" can point to different images
+
+var pinned = new ImageReference("nginx", digest: new Digest("sha256:abc123")); // digest only
+pinned.IsCanonical; // true
+pinned.IsImmutable; // true — digests are content-addressable and fixed
 ```
 
 ### Modifying using `with` expressions

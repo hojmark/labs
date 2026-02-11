@@ -17,4 +17,5 @@
   </Folder>
   <Project Path="dotnet/Containers.Tests/Containers.Tests.csproj" />
   <Project Path="dotnet/Containers/Containers.csproj" />
+  <Project Path="dotnet/Containers.Extensions.Nuke/Containers.Extensions.Nuke.csproj" />
 </Solution>

@@ -1,6 +1,6 @@
 <Project>
   <PropertyGroup>
-    <PackageVersion>1.0.0-preview.2.local</PackageVersion>
+    <PackageVersion>0.0.0-local</PackageVersion>
     <Authors>hojmark</Authors>
     <Copyright>Copyright (c) hojmark</Copyright>
     <PackageProjectUrl>https://github.com/hojmark/labs</PackageProjectUrl>

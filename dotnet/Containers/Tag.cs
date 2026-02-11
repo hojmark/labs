@@ -21,7 +21,7 @@ public sealed partial record Tag {
 
   public static implicit operator Tag( string tag ) => FromString( tag );
 
-  public static implicit operator Tag( SemVersion v ) => FromSemVersion( v );
+  public static implicit operator Tag( SemVersion v ) => FromSemVersion( v ); // TODO move to subtype?
 
   public static Tag FromString( string tag ) {
     return new(tag);

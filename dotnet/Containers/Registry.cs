@@ -5,7 +5,11 @@ public sealed partial record Registry {
     get;
   }
 
-  public Registry( string host ) {
+  internal bool NamespaceRequired {
+    get;
+  }
+
+  public Registry( string host, bool namespaceRequired = false ) {
     if ( string.IsNullOrWhiteSpace( host ) ) {
       throw new ArgumentException( "Registry host cannot be null or empty", nameof(host) );
     }
@@ -15,6 +19,7 @@ public sealed partial record Registry {
     }
 
     Host = host;
+    NamespaceRequired = namespaceRequired;
   }
 
   public static implicit operator Registry( string host ) => FromString( host );

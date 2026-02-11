@@ -2,7 +2,7 @@ using System.Text.RegularExpressions;
 
 namespace HLabs.Containers;
 
-public sealed record Digest {
+public sealed record ImageId {
   private const string DefaultAlgorithm = "sha256";
 
   private static readonly Regex Sha256Regex =
@@ -12,13 +12,13 @@ public sealed record Digest {
     get;
   }
 
-  public Digest( string value ) {
+  public ImageId( string value ) {
     if ( string.IsNullOrWhiteSpace( value ) ) {
-      throw new ArgumentException( "Digest cannot be null or empty", nameof(value) );
+      throw new ArgumentException( "Image ID cannot be null or empty", nameof(value) );
     }
 
     if ( value.Trim().Length != value.Length ) {
-      throw new ArgumentException( "Digest contains leading/trailing whitespace", nameof(value) );
+      throw new ArgumentException( "Image ID contains leading/trailing whitespace", nameof(value) );
     }
 
     string digest;
@@ -53,9 +53,9 @@ public sealed record Digest {
 #pragma warning restore CA1308
   }
 
-  public static implicit operator Digest( string value ) => FromString( value );
+  public static implicit operator ImageId( string value ) => FromString( value );
 
-  public static Digest FromString( string value ) {
+  public static ImageId FromString( string value ) {
     return new(value);
   }
 

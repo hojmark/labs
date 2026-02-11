@@ -1,10 +1,10 @@
 namespace HLabs.Containers;
 
 public sealed partial record Registry {
-  public static readonly Registry DockerHub = new("docker.io");
-  public static readonly Registry Quay = new("quay.io");
-  public static readonly Registry GitHub = new("ghcr.io");
-  public static readonly Registry Localhost = new("localhost:5000");
+  public static readonly Registry DockerHub = new("docker.io", true);
+  public static readonly Registry Quay = new("quay.io", true);
+  public static readonly Registry GitHub = new("ghcr.io", true);
+  public static readonly Registry Localhost = new("localhost:5000", false);
 
   /// <summary>
   /// Azure Container Registry.
