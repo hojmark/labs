@@ -1,4 +1,4 @@
-# HLabs.Containers
+# HLabs.Containers.ImageRefs
 
 Strongly-typed, validated container image references for .NET.
 
@@ -11,7 +11,7 @@ Build, parse, and manipulate Docker/OCI image references (like `docker.io/librar
 Install via NuGet:
 
 ```bash
-dotnet add package HLabs.Containers
+dotnet add package HLabs.Containers.ImageRefs
 ```
 
 ## Getting Started
