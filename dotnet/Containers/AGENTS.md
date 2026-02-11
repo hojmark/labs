@@ -62,6 +62,7 @@ dotnet/
 
 - Keep usage examples up to date in project README.md
 - XML docs on all public APIs with `<summary>`, `<param>`, `<returns>`, `<exception>` being required.
+  - Private or internal types and methods do not need XML docs but should still be well-commented if their logic is complex.
 - Include `<example>` tags showing valid/invalid inputs where appropriate.
 - Reference OCI spec sections where applicable
 - Document format specifications clearly
