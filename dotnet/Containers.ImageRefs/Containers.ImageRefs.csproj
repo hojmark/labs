@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <Description>Describe, validate, and manipulate container image references</Description>
-    <PackageTags>Docker container containers</PackageTags>
+    <PackageTags>Docker Podman container containers image</PackageTags>
     <IsPackable>true</IsPackable>
   </PropertyGroup>
 
