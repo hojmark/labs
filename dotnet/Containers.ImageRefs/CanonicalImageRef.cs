@@ -1,6 +1,6 @@
-using HLabs.Containers.Components;
+using HLabs.Containers.ImageRefs.Components;
 
-namespace HLabs.Containers;
+namespace HLabs.Containers.ImageRefs;
 
 /// <summary>
 /// Content-addressable (immutable) image reference.

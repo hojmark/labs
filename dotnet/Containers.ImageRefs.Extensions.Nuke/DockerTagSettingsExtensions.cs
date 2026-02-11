@@ -1,6 +1,6 @@
 ﻿using Nuke.Common.Tools.Docker;
 
-namespace HLabs.Containers.Extensions.Nuke;
+namespace HLabs.Containers.ImageRefs.Extensions.Nuke;
 
 /// <summary>
 /// Extension methods for <see cref="DockerTagSettings"/> to work with strongly-typed image references.

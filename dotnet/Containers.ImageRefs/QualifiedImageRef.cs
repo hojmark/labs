@@ -1,6 +1,6 @@
-using HLabs.Containers.Components;
+using HLabs.Containers.ImageRefs.Components;
 
-namespace HLabs.Containers;
+namespace HLabs.Containers.ImageRefs;
 
 // -----------------------------
 // Qualified image reference: fully qualified (registry, namespace, repository, tag or digest)

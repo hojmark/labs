@@ -1,7 +1,6 @@
-using System.Diagnostics.CodeAnalysis;
-using HLabs.Containers.Components;
+using HLabs.Containers.ImageRefs.Components;
 
-namespace HLabs.Containers;
+namespace HLabs.Containers.ImageRefs;
 
 // TODO support platform
 // TODO docs

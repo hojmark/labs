@@ -1,8 +1,8 @@
-using HLabs.Containers.Components;
+using HLabs.Containers.ImageRefs.Components;
 using Nuke.Common.Tooling;
 using Nuke.Common.Tools.Docker;
 
-namespace HLabs.Containers.Extensions.Nuke;
+namespace HLabs.Containers.ImageRefs.Extensions.Nuke;
 
 public static class LocalDockerRepositoryExtensions {
   public static Digest GetDigest( this ImageId imageId ) {

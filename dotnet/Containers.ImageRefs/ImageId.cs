@@ -1,6 +1,6 @@
 using System.Text.RegularExpressions;
 
-namespace HLabs.Containers;
+namespace HLabs.Containers.ImageRefs;
 
 /// <summary>
 /// Represents a local container image ID (e.g., "sha256:a3ed95caeb02...").

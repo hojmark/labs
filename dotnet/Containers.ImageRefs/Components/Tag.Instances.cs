@@ -1,4 +1,4 @@
-namespace HLabs.Containers.Components;
+namespace HLabs.Containers.ImageRefs.Components;
 
 public sealed partial record Tag {
   /// <summary>

@@ -1,7 +1,7 @@
 using System.Text.RegularExpressions;
-using HLabs.Containers.Components;
+using HLabs.Containers.ImageRefs.Components;
 
-namespace HLabs.Containers;
+namespace HLabs.Containers.ImageRefs;
 
 public sealed partial record PartialImageRef {
   [GeneratedRegex(

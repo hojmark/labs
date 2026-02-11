@@ -1,4 +1,4 @@
-namespace HLabs.Containers;
+namespace HLabs.Containers.ImageRefs.Parsing;
 
 /// <summary>
 /// Extension methods for working with container image references from strings.

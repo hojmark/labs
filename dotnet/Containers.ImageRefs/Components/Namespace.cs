@@ -1,6 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
 
-namespace HLabs.Containers.Components;
+namespace HLabs.Containers.ImageRefs.Components;
 
 /// <summary>
 /// Represents a namespace within a container registry (e.g., organization or user name).

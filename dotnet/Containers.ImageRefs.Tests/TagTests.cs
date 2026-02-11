@@ -1,7 +1,7 @@
-using HLabs.Containers.Components;
+using HLabs.Containers.ImageRefs.Components;
 using Semver;
 
-namespace HLabs.Containers.Tests;
+namespace HLabs.Containers.ImageRefs.Tests;
 
 internal sealed class TagTests {
   [Test]

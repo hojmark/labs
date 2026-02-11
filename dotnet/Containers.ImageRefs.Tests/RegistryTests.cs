@@ -1,6 +1,6 @@
-using HLabs.Containers.Components;
+using HLabs.Containers.ImageRefs.Components;
 
-namespace HLabs.Containers.Tests;
+namespace HLabs.Containers.ImageRefs.Tests;
 
 internal sealed class RegistryTests {
   [Test]

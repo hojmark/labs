@@ -1,4 +1,4 @@
-namespace HLabs.Containers;
+namespace HLabs.Containers.ImageRefs;
 
 /// <summary>
 /// Specifies how to handle missing components when qualifying a partial image reference.

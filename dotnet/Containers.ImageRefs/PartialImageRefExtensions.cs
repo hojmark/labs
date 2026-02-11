@@ -1,6 +1,6 @@
-using HLabs.Containers.Components;
+using HLabs.Containers.ImageRefs.Components;
 
-namespace HLabs.Containers;
+namespace HLabs.Containers.ImageRefs;
 
 /// <summary>
 /// Extension methods for <see cref="PartialImageRef"/> that provide convenient qualification with different components.

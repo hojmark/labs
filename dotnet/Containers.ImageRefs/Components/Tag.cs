@@ -1,6 +1,6 @@
 using Semver;
 
-namespace HLabs.Containers.Components;
+namespace HLabs.Containers.ImageRefs.Components;
 
 /// <summary>
 /// Represents a tag for a container image (e.g., "latest", "1.0", "v2.3.1").
