@@ -16,7 +16,10 @@ public sealed partial record Tag {
       throw new ArgumentException( "Tag contains leading/trailing whitespace", nameof(value) );
     }
 
-    Value = value;
+    // Tags are conventionally lowercase
+#pragma warning disable CA1308
+    Value = value.ToLowerInvariant();
+#pragma warning restore CA1308
   }
 
   public static implicit operator Tag( string tag ) => FromString( tag );

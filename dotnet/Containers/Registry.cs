@@ -18,7 +18,10 @@ public sealed partial record Registry {
       throw new ArgumentException( "Registry host contains leading/trailing whitespace", nameof(host) );
     }
 
-    Host = host;
+    // Registry hosts are conventionally lowercase
+#pragma warning disable CA1308
+    Host = host.ToLowerInvariant();
+#pragma warning restore CA1308
     NamespaceRequired = namespaceRequired;
   }
 

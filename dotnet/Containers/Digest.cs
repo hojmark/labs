@@ -31,7 +31,7 @@ public sealed record Digest {
 
       if ( !algorithm.Equals( DefaultAlgorithm, StringComparison.OrdinalIgnoreCase ) ) {
         throw new ArgumentException(
-          $"Unsupported image ID algorithm '{algorithm}'. Only sha256 is supported.",
+          $"Unsupported digest algorithm '{algorithm}'. Only sha256 is supported.",
           nameof(value)
         );
       }

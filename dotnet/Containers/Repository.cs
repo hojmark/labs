@@ -18,7 +18,10 @@ public sealed record Repository {
       throw new ArgumentException( "Repository contains leading/trailing whitespace", nameof(name) );
     }
 
-    Name = name;
+    // Repository names are conventionally lowercase
+#pragma warning disable CA1308
+    Name = name.ToLowerInvariant();
+#pragma warning restore CA1308
   }
 
   public static implicit operator Repository( string value ) => FromString( value );

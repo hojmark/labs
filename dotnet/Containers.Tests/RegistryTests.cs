@@ -58,7 +58,7 @@ internal sealed class RegistryTests {
 
   [Test]
   public async Task EqualRegistriesAreEqual() {
-    var a = new Registry( "docker.io" );
+    var a = new Registry( "docker.io", true ); // TODO consider: should it be equal if namespaceRequired is false?
     await Assert.That( a ).IsEqualTo( Registry.DockerHub );
   }
 }

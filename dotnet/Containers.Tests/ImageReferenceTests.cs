@@ -3,6 +3,8 @@
 namespace HLabs.Containers.Tests;
 
 internal sealed class ImageReferenceTests {
+  private const string ValidDigest = "sha256:a3ed95caeb02ffe68cdd9fd84406680ae93d633cb16422d00e8a7c22955b46d4";
+
   // -----------------------
   // ToString round-trip
   // -----------------------
@@ -20,20 +22,20 @@ internal sealed class ImageReferenceTests {
       );
       yield return (
         new PartialImageRef( Registry.DockerHub, new Repository( "ubuntu" ), Tag.Latest ),
-        "docker.io/library/ubuntu:latest"
+        "docker.io/ubuntu:latest"
       );
       yield return (
         new PartialImageRef( new Repository( "ubuntu" ), Tag.Latest ),
-        "docker.io/library/ubuntu:latest"
+        "ubuntu:latest"
       );
       // No tag — no :latest in output
       yield return (
         new PartialImageRef( new Repository( "ubuntu" ) ),
-        "docker.io/library/ubuntu"
+        "ubuntu"
       );
       yield return (
         new PartialImageRef( "ubuntu" ),
-        "docker.io/library/ubuntu"
+        "ubuntu"
       );
       // Implicit conversions
       yield return (
@@ -43,11 +45,11 @@ internal sealed class ImageReferenceTests {
       // Custom namespace on DockerHub
       yield return (
         new PartialImageRef( new Namespace( "hojmark" ), "drift", Tag.Latest ),
-        "docker.io/hojmark/drift:latest"
+        "hojmark/drift:latest"
       );
       yield return (
         new PartialImageRef( new Namespace( "hojmark" ), "drift", new SemVersion( 1, 21, 1 ) ),
-        "docker.io/hojmark/drift:1.21.1"
+        "hojmark/drift:1.21.1"
       );
       yield return (
         new PartialImageRef( Registry.DockerHub, "hojmark", "drift", new SemVersion( 1, 21, 1 ) ),
@@ -77,13 +79,13 @@ internal sealed class ImageReferenceTests {
       );
       // With digest and tag
       yield return (
-        new PartialImageRef( Registry.DockerHub, "library", "nginx", Tag.Latest, new Digest( "sha256:abc123" ) ),
-        "docker.io/library/nginx:latest@sha256:abc123"
+        new PartialImageRef( Registry.DockerHub, "library", "nginx", Tag.Latest, new Digest( ValidDigest ) ),
+        $"docker.io/library/nginx:latest@{ValidDigest}"
       );
       // With digest only (no tag)
       yield return (
-        new PartialImageRef( "nginx", digest: new Digest( "sha256:abc123" ) ),
-        "docker.io/library/nginx@sha256:abc123"
+        new PartialImageRef( "nginx", digest: new Digest( ValidDigest ) ),
+        $"nginx@{ValidDigest}"
       );
     }
   }
@@ -108,9 +110,9 @@ internal sealed class ImageReferenceTests {
       yield return ( "ghcr.io/myorg/myapp:latest", "ghcr.io/myorg/myapp:latest" );
       yield return ( "localhost:5000/drift:dev", "localhost:5000/drift:dev" );
       // Digest only
-      yield return ( "docker.io/library/nginx@sha256:abc123", "docker.io/library/nginx@sha256:abc123" );
+      yield return ( $"docker.io/library/nginx@{ValidDigest}", $"docker.io/library/nginx@{ValidDigest}" );
       // Tag + digest
-      yield return ( "docker.io/library/nginx:1.25@sha256:abc123", "docker.io/library/nginx:1.25@sha256:abc123" );
+      yield return ( $"docker.io/library/nginx:1.25@{ValidDigest}", $"docker.io/library/nginx:1.25@{ValidDigest}" );
     }
   }
 
@@ -124,17 +126,17 @@ internal sealed class ImageReferenceTests {
   public static IEnumerable<(string, string)> ParseCanonicalCases {
     get {
       // No tag in input → no tag in output
-      yield return ( "ubuntu", "docker.io/library/ubuntu:latest" );
-      yield return ( "docker.io/library/ubuntu", "docker.io/library/ubuntu:latest" );
+      yield return ( "ubuntu", "ubuntu" );
+      yield return ( "docker.io/library/ubuntu", "docker.io/library/ubuntu" );
       // Explicit tag preserved
       yield return ( "docker.io/library/ubuntu:22.04", "docker.io/library/ubuntu:22.04" );
       yield return ( "docker.io/hojmark/drift:1.21.1", "docker.io/hojmark/drift:1.21.1" );
       yield return ( "ghcr.io/myorg/myapp:latest", "ghcr.io/myorg/myapp:latest" );
       yield return ( "localhost:5000/drift:dev", "localhost:5000/drift:dev" );
       // Digest only
-      yield return ( "docker.io/library/nginx@sha256:abc123", "docker.io/library/nginx@sha256:abc123" );
+      yield return ( $"docker.io/library/nginx@{ValidDigest}", $"docker.io/library/nginx@{ValidDigest}" );
       // Tag + digest
-      yield return ( "docker.io/library/nginx:1.25@sha256:abc123", "docker.io/library/nginx:1.25@sha256:abc123" );
+      yield return ( $"docker.io/library/nginx:1.25@{ValidDigest}", $"docker.io/library/nginx:1.25@{ValidDigest}" );
     }
   }
 
@@ -209,7 +211,7 @@ internal sealed class ImageReferenceTests {
     var qualified = image.Qualify();
     await Assert.That( qualified.IsQualified ).IsTrue();
     await Assert.That( qualified.Tag ).IsEqualTo( Tag.Latest );
-    // await Assert.That( canonical.Digest ).IsEqualTo( new Digest( "sha256:abc123" ) );
+    // await Assert.That( canonical.Digest ).IsEqualTo( new Digest( ValidDigest ) );
     await Assert.That( qualified.Registry ).IsEqualTo( Registry.DockerHub );
     await Assert.That( qualified.Repository ).IsEqualTo( new Repository( "nginx" ) );
     await Assert.That( qualified.Namespace ).IsEqualTo( new Namespace( "library" ) );
@@ -218,34 +220,34 @@ internal sealed class ImageReferenceTests {
 
   [Test]
   public async Task IsCanonicalTrueWhenDigestPresent() {
-    var image = new PartialImageRef( "nginx", digest: new Digest( "sha256:abc123" ) );
+    var image = new PartialImageRef( "nginx", digest: new Digest( ValidDigest ) );
     await Assert.That( image.IsQualified ).IsFalse();
     await Assert.That( image.CanQualify ).IsTrue();
 
     var qualified = image.Qualify();
     await Assert.That( qualified.IsQualified ).IsTrue();
     // await Assert.That( canonical.Tag ).IsEqualTo( Tag.Latest );
-    await Assert.That( qualified.Digest ).IsEqualTo( new Digest( "sha256:abc123" ) );
+    await Assert.That( qualified.Digest ).IsEqualTo( new Digest( ValidDigest ) );
     await Assert.That( qualified.Registry ).IsEqualTo( Registry.DockerHub );
     await Assert.That( qualified.Repository ).IsEqualTo( new Repository( "nginx" ) );
     await Assert.That( qualified.Namespace ).IsEqualTo( new Namespace( "library" ) );
-    await Assert.That( qualified.ToString() ).IsEqualTo( "docker.io/library/nginx@sha256:abc123" );
+    await Assert.That( qualified.ToString() ).IsEqualTo( $"docker.io/library/nginx@{ValidDigest}" );
   }
 
   [Test]
   public async Task IsCanonicalTrueWhenBothTagAndDigest() {
-    var image = new PartialImageRef( "nginx", Tag.Latest, digest: new Digest( "sha256:abc123" ) );
+    var image = new PartialImageRef( "nginx", Tag.Latest, digest: new Digest( ValidDigest ) );
     await Assert.That( image.IsQualified ).IsFalse();
     await Assert.That( image.CanQualify ).IsTrue();
 
     var qualified = image.Qualify();
     await Assert.That( qualified.IsQualified ).IsTrue();
     await Assert.That( qualified.Tag ).IsEqualTo( Tag.Latest );
-    await Assert.That( qualified.Digest ).IsEqualTo( new Digest( "sha256:abc123" ) );
+    await Assert.That( qualified.Digest ).IsEqualTo( new Digest( ValidDigest ) );
     await Assert.That( qualified.Registry ).IsEqualTo( Registry.DockerHub );
     await Assert.That( qualified.Repository ).IsEqualTo( new Repository( "nginx" ) );
     await Assert.That( qualified.Namespace ).IsEqualTo( new Namespace( "library" ) );
-    await Assert.That( qualified.ToString() ).IsEqualTo( "docker.io/library/nginx:latest@sha256:abc123" );
+    await Assert.That( qualified.ToString() ).IsEqualTo( $"docker.io/library/nginx:latest@{ValidDigest}" );
   }
 
   // -----------------------
@@ -265,13 +267,13 @@ internal sealed class ImageReferenceTests {
 
   [Test]
   public async Task IsImmutableTrueWhenDigestPresent() {
-    var image = new PartialImageRef( "nginx", digest: new Digest( "sha256:abc123" ) );
+    var image = new PartialImageRef( "nginx", digest: new Digest( ValidDigest ) );
     await Assert.That( image.IsPinned ).IsTrue();
   }
 
   [Test]
   public async Task IsImmutableTrueWhenBothTagAndDigest() {
-    var image = new PartialImageRef( "nginx", Tag.Latest, digest: new Digest( "sha256:abc123" ) );
+    var image = new PartialImageRef( "nginx", Tag.Latest, digest: new Digest( ValidDigest ) );
     await Assert.That( image.IsPinned ).IsTrue();
   }
 
@@ -368,13 +370,13 @@ internal sealed class ImageReferenceTests {
   [Test]
   public async Task WithDigestAddsDigest() {
     var original = new PartialImageRef( "nginx", Tag.Latest );
-    var updated = original.With( new Digest( "sha256:abc123" ) );
-    await Assert.That( updated.ToString() ).IsEqualTo( "nginx:latest@sha256:abc123" );
+    var updated = original.With( new Digest( ValidDigest ) );
+    await Assert.That( updated.ToString() ).IsEqualTo( $"nginx:latest@{ValidDigest}" );
   }
 
   [Test]
   public async Task WithDigestNullRemovesDigest() {
-    var original = new PartialImageRef( "nginx", Tag.Latest, digest: new Digest( "sha256:abc123" ) );
+    var original = new PartialImageRef( "nginx", Tag.Latest, digest: new Digest( ValidDigest ) );
     var updated = original.With( (Digest) null! );
     await Assert.That( updated.ToString() ).IsEqualTo( "nginx:latest" );
   }
