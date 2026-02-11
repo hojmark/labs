@@ -74,6 +74,7 @@ public sealed partial record PartialImageRef : ImageRef {
 
   // Overload clashes with Namespace + Repository + Tag when using string literals (implicit conversions), so not included for now.
   // The more common use case is probably the other one.
+  // TODO decide
   public PartialImageRef( Registry registry, Repository repository, Tag tag )
     : this( repository, tag, registry, null, null ) {
   }
@@ -88,6 +89,10 @@ public sealed partial record PartialImageRef : ImageRef {
 
   public PartialImageRef( Registry registry, Namespace ns, Repository repository, Tag tag )
     : this( repository, tag, registry, ns, null ) {
+  }
+
+  public PartialImageRef( Registry registry, Namespace ns, Repository repository, Digest digest )
+    : this( repository, null, registry, ns, digest ) {
   }
 
   public PartialImageRef( Registry registry, Repository repository, Tag tag, Digest digest )
@@ -163,7 +168,7 @@ public sealed partial record PartialImageRef : ImageRef {
   /// Either a tag or digest must be present.
   /// </summary>
   /// <param name="mode">The behavior when the reference is not in a canonical form.</param>
-  /// <exception cref="InvalidOperationException">Throws InvalidOperationException if the reference is not in a canonical form.</exception>
+  /// <exception cref="InvalidOperationException">Throws InvalidOperationException if the reference is not in a qualified form.</exception>
   /// <returns>A canonical image reference.</returns>
   public QualifiedImageRef Qualify( QualificationMode mode = QualificationMode.DefaultFilling ) {
     // Defaults
@@ -179,11 +184,34 @@ public sealed partial record PartialImageRef : ImageRef {
     return new QualifiedImageRef( registry, ns, repo, tag, Digest );
   }
 
-  public CanonicalImageRef Canonicalize( Digest digest, QualificationMode mode = QualificationMode.DefaultFilling ) {
-    return With( digest ).Qualify( mode ).Canonicalize();
+
+  /// <summary>
+  /// Canonicalizes the image reference using the current digest.
+  /// </summary>
+  /// <param name="canonicalizationMode">Whether to maintain or exclude the tag.</param>
+  /// <param name="qualificationMode">How to handle missing components when qualifying.</param>
+  /// <returns>A canonical image reference.</returns>
+  /// <exception cref="InvalidOperationException">Thrown when digest is not present.</exception>
+  public CanonicalImageRef Canonicalize(
+    CanonicalizationMode canonicalizationMode = CanonicalizationMode.ExcludeTag,
+    QualificationMode qualificationMode = QualificationMode.DefaultFilling
+  ) {
+    return Qualify( qualificationMode ).Canonicalize( canonicalizationMode );
   }
 
-  public CanonicalImageRef Canonicalize( QualificationMode mode = QualificationMode.DefaultFilling ) {
-    return Qualify( mode ).Canonicalize();
+
+  /// <summary>
+  /// Canonicalizes the image reference with a specific digest.
+  /// </summary>
+  /// <param name="digest">The digest to use.</param>
+  /// <param name="canonicalizationMode">Whether to maintain or exclude the tag.</param>
+  /// <param name="qualificationMode">How to handle missing components when qualifying.</param>
+  /// <returns>A canonical image reference.</returns>
+  public CanonicalImageRef Canonicalize(
+    Digest digest,
+    CanonicalizationMode canonicalizationMode = CanonicalizationMode.ExcludeTag,
+    QualificationMode qualificationMode = QualificationMode.DefaultFilling
+  ) {
+    return With( digest ).Canonicalize( canonicalizationMode, qualificationMode );
   }
 }

@@ -46,6 +46,12 @@ public sealed record CanonicalImageRef : ImageRef {
 
   public override bool IsQualified => true;
 
+  /// <summary>
+  /// Gets a value indicating whether this reference is pinned by a digest.
+  /// Always true for canonical references as they always have a digest.
+  /// </summary>
+  public override bool IsPinned => true;
+
   public override string ToString() {
     var nsPart = Namespace is not null ? $"{Namespace}/" : string.Empty;
     return Tag is not null

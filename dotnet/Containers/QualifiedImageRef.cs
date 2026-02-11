@@ -40,25 +40,32 @@ public sealed record QualifiedImageRef : ImageRef {
     new(registry, ns ?? Namespace, Repository, Tag, Digest);
 
   /// <summary>
-  /// Creates a pinned image reference.
+  /// Creates a digest-pinned image reference.
   /// </summary>
-  public CanonicalImageRef Canonicalize( Digest digest ) {
+  /// <param name="digest">The digest to pin the reference with.</param>
+  /// <param name="mode">Specifies whether to maintain or exclude the tag in the canonical reference.</param>
+  /// <returns>A canonical (immutable) image reference.</returns>
+  /// <exception cref="ArgumentNullException">Thrown when digest is null.</exception>
+  public CanonicalImageRef Canonicalize( Digest digest, CanonicalizationMode mode = CanonicalizationMode.ExcludeTag ) {
     ArgumentNullException.ThrowIfNull( digest );
 
-    return new CanonicalImageRef( Registry, Namespace, Repository, digest );
+    var tag = mode == CanonicalizationMode.MaintainTag ? Tag : null;
+    return new CanonicalImageRef( Registry, Namespace, Repository, digest, tag );
   }
 
   /// <summary>
-  /// Creates a pinned image reference using the current digest.
+  /// Creates a digest-pinned image reference using the current digest.
   /// </summary>
+  /// <param name="mode">Specifies whether to maintain or exclude the tag in the canonical reference.</param>
   /// <exception cref="InvalidOperationException">Thrown when digest is not present.</exception>
-  public CanonicalImageRef Canonicalize() {
+  public CanonicalImageRef Canonicalize( CanonicalizationMode mode = CanonicalizationMode.ExcludeTag ) {
     if ( Digest is null ) {
       throw new InvalidOperationException(
         "Cannot canonicalize without a digest. Use Canonicalize(digest) to provide one." );
     }
 
-    return new CanonicalImageRef( Registry, Namespace, Repository, Digest );
+    var tag = mode == CanonicalizationMode.MaintainTag ? Tag : null;
+    return new CanonicalImageRef( Registry, Namespace, Repository, Digest, tag );
   }
 
   public override bool IsQualified => true;
