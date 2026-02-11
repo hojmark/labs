@@ -15,7 +15,7 @@
     <File Path="Directory.Build.props" />
     <File Path="Directory.Packages.props" />
   </Folder>
-  <Project Path="dotnet\Containers.ImageRefs.Extensions.Nuke\Containers.ImageRefs.Extensions.Nuke.csproj" />
-  <Project Path="dotnet\Containers.ImageRefs.Tests\Containers.ImageRefs.Tests.csproj" />
-  <Project Path="dotnet\Containers.ImageRefs\Containers.ImageRefs.csproj" />
+  <Project Path="dotnet\ImageReferences.Extensions.Nuke\ImageReferences.Extensions.Nuke.csproj" />
+  <Project Path="dotnet\ImageReferences.Tests\ImageReferences.Tests.csproj" />
+  <Project Path="dotnet\ImageReferences\ImageReferences.csproj" />
 </Solution>
