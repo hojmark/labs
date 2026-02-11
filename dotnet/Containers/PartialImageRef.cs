@@ -18,9 +18,7 @@ namespace HLabs.Containers;
 public sealed partial record PartialImageRef : ImageRef {
   private PartialImageRef(
     Repository repository,
-#pragma warning disable S3427
     Tag? tag = null,
-#pragma warning restore S3427
     Registry? registry = null,
     Namespace? @namespace = null,
     Digest? digest = null
