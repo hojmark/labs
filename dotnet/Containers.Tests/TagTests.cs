@@ -1,3 +1,4 @@
+using HLabs.Containers.Components;
 using Semver;
 
 namespace HLabs.Containers.Tests;

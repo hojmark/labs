@@ -1,4 +1,4 @@
-namespace HLabs.Containers;
+namespace HLabs.Containers.Components;
 
 public sealed partial record Registry {
   /// <summary>

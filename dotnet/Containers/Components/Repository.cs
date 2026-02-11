@@ -1,4 +1,4 @@
-namespace HLabs.Containers;
+namespace HLabs.Containers.Components;
 
 /// <summary>
 /// Represents a repository name within a container registry namespace.

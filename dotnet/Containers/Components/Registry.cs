@@ -1,4 +1,4 @@
-namespace HLabs.Containers;
+namespace HLabs.Containers.Components;
 
 /// <summary>
 /// Represents a container registry host (e.g., "docker.io", "ghcr.io", "localhost:5000").

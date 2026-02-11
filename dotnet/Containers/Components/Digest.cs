@@ -1,6 +1,6 @@
 using System.Text.RegularExpressions;
 
-namespace HLabs.Containers;
+namespace HLabs.Containers.Components;
 
 /// <summary>
 /// Represents a digest for a container image e.g., <c>sha256:a3ed95caeb02ffe68cdd9fd84406680ae93d633cb16422d00e8a7c22955b46d4</c>.
