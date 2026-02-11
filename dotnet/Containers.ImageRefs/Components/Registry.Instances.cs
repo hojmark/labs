@@ -2,22 +2,22 @@ namespace HLabs.Containers.ImageRefs.Components;
 
 public sealed partial record Registry {
   /// <summary>
-  /// Docker Hub registry (docker.io). Requires a namespace.
+  /// Docker Hub registry (docker.io).
   /// </summary>
   public static readonly Registry DockerHub = new("docker.io", true);
 
   /// <summary>
-  /// Quay.io container registry. Requires a namespace.
+  /// Quay.io container registry (quay.io).
   /// </summary>
   public static readonly Registry Quay = new("quay.io", true);
 
   /// <summary>
-  /// GitHub Container Registry (ghcr.io). Requires a namespace.
+  /// GitHub Container Registry (ghcr.io).
   /// </summary>
   public static readonly Registry GitHub = new("ghcr.io", true);
 
   /// <summary>
-  /// Local Docker registry (localhost:5000). Does not require a namespace.
+  /// Local registry (localhost:5000).
   /// </summary>
   public static readonly Registry Localhost = new("localhost:5000", false);
 

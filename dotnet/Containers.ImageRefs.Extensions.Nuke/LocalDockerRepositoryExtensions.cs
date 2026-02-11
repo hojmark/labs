@@ -4,7 +4,15 @@ using Nuke.Common.Tools.Docker;
 
 namespace HLabs.Containers.ImageRefs.Extensions.Nuke;
 
+/// <summary>
+/// Extension methods for working with local Docker repository to retrieve image metadata.
+/// </summary>
 public static class LocalDockerRepositoryExtensions {
+  /// <summary>
+  /// Gets the digest for a local Docker image by its image ID.
+  /// </summary>
+  /// <param name="imageId">The image ID to look up.</param>
+  /// <returns>The digest of the image.</returns>
   public static Digest GetDigest( this ImageId imageId ) {
     var output = DockerTasks.DockerImageLs( s => s
       .SetNoTrunc( true )

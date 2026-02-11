@@ -16,9 +16,7 @@
     <IsPackable>false</IsPackable>
     <AnalysisMode>All</AnalysisMode>
     <TreatWarningsAsErrors Condition="'$(Configuration)'=='Release'">true</TreatWarningsAsErrors>
-    <!-- TODO write docs!
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    -->
     <NoWarn>$(NoWarn);SA0001</NoWarn>
   </PropertyGroup>
 

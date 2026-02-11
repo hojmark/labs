@@ -36,7 +36,7 @@ public sealed record Digest {
   /// Initializes a new instance of the <see cref="Digest"/> class.
   /// </summary>
   /// <param name="value">The digest value. Can be in format <c>sha256:abc123</c> or just <c>abc123</c>.</param>
-  /// <exception cref="ArgumentException">Thrown when <see cref="value"/> is not a valid digest.</exception>
+  /// <exception cref="ArgumentException">Thrown when <paramref name="value"/> is not a valid digest.</exception>
   public Digest( string value ) {
     if ( string.IsNullOrWhiteSpace( value ) ) {
       throw new ArgumentException( "Digest cannot be null or empty", nameof(value) );
@@ -89,7 +89,7 @@ public sealed record Digest {
   /// </summary>
   /// <param name="value">The digest value.</param>
   /// <returns>A new <see cref="Digest"/> instance.</returns>
-  /// <exception cref="ArgumentException">Thrown when <see cref="value"/> is not a valid digest.</exception>
+  /// <exception cref="ArgumentException">Thrown when <paramref name="value"/> is not a valid digest.</exception>
   public static Digest FromString( string value ) {
     return new(value);
   }

@@ -3,22 +3,24 @@ using HLabs.Containers.ImageRefs.Components;
 namespace HLabs.Containers.ImageRefs;
 
 // TODO support platform
-// TODO docs
+// TODO add no-arg Canonicalize?
 /// <summary>
-/// ~~A fully-qualified container image reference.~~
-/// <example>
-/// example.com:5000/team/my-app:2.0
-///
-/// Host: example.com:5000
-/// Namespace: team
-/// Repository: my-app
-/// Tag: 2.0
-/// </example>
+/// Partial image reference.
+/// <list type="bullet">
+/// <item>
+/// <description>Use <see cref="Qualify"/> to convert to a fully qualified reference.</description>
+/// </item>
+/// <item>
+/// <description>Use <see cref="Canonicalize(CanonicalizationMode,QualificationMode)"/> to convert to a canonical reference.</description>
+/// </item>
+/// </list>
 /// </summary>
 public sealed partial record PartialImageRef : ImageRef {
   private PartialImageRef(
     Repository repository,
+#pragma warning disable S3427
     Tag? tag = null,
+#pragma warning restore S3427
     Registry? registry = null,
     Namespace? @namespace = null,
     Digest? digest = null
@@ -35,26 +37,57 @@ public sealed partial record PartialImageRef : ImageRef {
 
 #pragma warning restore SA1124
 
+  /// <summary>
+  /// Initializes a new instance of the <see cref="PartialImageRef"/> class.
+  /// </summary>
+  /// <param name="repository">The repository name.</param>
   public PartialImageRef( Repository repository )
     : this( repository, null, null, null, null ) {
   }
 
+  /// <summary>
+  /// Initializes a new instance of the <see cref="PartialImageRef"/> class.
+  /// </summary>
+  /// <param name="repository">The repository name.</param>
+  /// <param name="tag">The tag.</param>
   public PartialImageRef( Repository repository, Tag tag )
     : this( repository, tag, null, null, null ) {
   }
 
+  /// <summary>
+  /// Initializes a new instance of the <see cref="PartialImageRef"/> class.
+  /// </summary>
+  /// <param name="ns">The namespace.</param>
+  /// <param name="repository">The repository name.</param>
   public PartialImageRef( Namespace ns, Repository repository )
     : this( repository, null, null, ns, null ) {
   }
 
+  /// <summary>
+  /// Initializes a new instance of the <see cref="PartialImageRef"/> class.
+  /// </summary>
+  /// <param name="ns">The namespace.</param>
+  /// <param name="repository">The repository name.</param>
+  /// <param name="tag">The tag.</param>
   public PartialImageRef( Namespace ns, Repository repository, Tag tag )
     : this( repository, tag, null, ns, null ) {
   }
 
+  /// <summary>
+  /// Initializes a new instance of the <see cref="PartialImageRef"/> class.
+  /// </summary>
+  /// <param name="repository">The repository name.</param>
+  /// <param name="digest">The digest.</param>
   public PartialImageRef( Repository repository, Digest digest )
     : this( repository, null, null, null, digest ) {
   }
 
+  /// <summary>
+  /// Initializes a new instance of the <see cref="PartialImageRef"/> class.
+  /// </summary>
+  /// <param name="repository">The repository name.</param>
+  /// <param name="tag">The tag.</param>
+  /// <param name="digest">The digest.</param>
   public PartialImageRef( Repository repository, Tag tag, Digest digest )
     : this( repository, tag, null, null, digest ) {
   }
@@ -66,6 +99,11 @@ public sealed partial record PartialImageRef : ImageRef {
   #region Any registry
 
 #pragma warning restore SA1124
+  /// <summary>
+  /// Initializes a new instance of the <see cref="PartialImageRef"/> class.
+  /// </summary>
+  /// <param name="registry">The registry.</param>
+  /// <param name="repository">The repository name.</param>
   public PartialImageRef( Registry registry, Repository repository )
     : this( repository, null, registry, null, null ) {
   }
@@ -73,36 +111,88 @@ public sealed partial record PartialImageRef : ImageRef {
   // Overload clashes with Namespace + Repository + Tag when using string literals (implicit conversions), so not included for now.
   // The more common use case is probably the other one.
   // TODO decide
+
+  /// <summary>
+  /// Initializes a new instance of the <see cref="PartialImageRef"/> class.
+  /// </summary>
+  /// <param name="registry">The registry.</param>
+  /// <param name="repository">The repository name.</param>
+  /// <param name="tag">The tag.</param>
   public PartialImageRef( Registry registry, Repository repository, Tag tag )
     : this( repository, tag, registry, null, null ) {
   }
 
+  /// <summary>
+  /// Initializes a new instance of the <see cref="PartialImageRef"/> class.
+  /// </summary>
+  /// <param name="registry">The registry.</param>
+  /// <param name="repository">The repository name.</param>
+  /// <param name="digest">The digest.</param>
   public PartialImageRef( Registry registry, Repository repository, Digest digest )
     : this( repository, null, registry, null, digest ) {
   }
 
+  /// <summary>
+  /// Initializes a new instance of the <see cref="PartialImageRef"/> class.
+  /// </summary>
+  /// <param name="registry">The registry.</param>
+  /// <param name="ns">The namespace.</param>
+  /// <param name="repository">The repository name.</param>
   public PartialImageRef( Registry registry, Namespace ns, Repository repository )
     : this( repository, null, registry, ns, null ) {
   }
 
+  /// <summary>
+  /// Initializes a new instance of the <see cref="PartialImageRef"/> class.
+  /// </summary>
+  /// <param name="registry">The registry.</param>
+  /// <param name="ns">The namespace.</param>
+  /// <param name="repository">The repository name.</param>
+  /// <param name="tag">The tag.</param>
   public PartialImageRef( Registry registry, Namespace ns, Repository repository, Tag tag )
     : this( repository, tag, registry, ns, null ) {
   }
 
+  /// <summary>
+  /// Initializes a new instance of the <see cref="PartialImageRef"/> class.
+  /// </summary>
+  /// <param name="registry">The registry.</param>
+  /// <param name="ns">The namespace.</param>
+  /// <param name="repository">The repository name.</param>
+  /// <param name="digest">The digest.</param>
   public PartialImageRef( Registry registry, Namespace ns, Repository repository, Digest digest )
     : this( repository, null, registry, ns, digest ) {
   }
 
+  /// <summary>
+  /// Initializes a new instance of the <see cref="PartialImageRef"/> class.
+  /// </summary>
+  /// <param name="registry">The registry.</param>
+  /// <param name="repository">The repository name.</param>
+  /// <param name="tag">The tag.</param>
+  /// <param name="digest">The digest.</param>
   public PartialImageRef( Registry registry, Repository repository, Tag tag, Digest digest )
     : this( repository, tag, registry, null, digest ) {
   }
 
+  /// <summary>
+  /// Initializes a new instance of the <see cref="PartialImageRef"/> class.
+  /// </summary>
+  /// <param name="registry">The registry.</param>
+  /// <param name="ns">The namespace.</param>
+  /// <param name="repository">The repository name.</param>
+  /// <param name="tag">The tag.</param>
+  /// <param name="digest">The digest.</param>
   public PartialImageRef( Registry registry, Namespace ns, Repository repository, Tag tag, Digest digest )
     : this( repository, tag, registry, ns, digest ) {
   }
 
   #endregion
 
+  /// <summary>
+  /// Returns a string representation of this image reference.
+  /// </summary>
+  /// <returns>A string representation of this image reference.</returns>
   public override string ToString() {
     var reg = Registry is null ? string.Empty : $"{Registry}/";
     var ns = Namespace is null ? string.Empty : $"{Namespace}/";
@@ -111,13 +201,21 @@ public sealed partial record PartialImageRef : ImageRef {
     return $"{reg}{ns}{Repository}{tag}{digest}";
   }
 
+  /// <summary>
+  /// Tries to convert this partial reference to a qualified reference by applying default conventions.
+  /// </summary>
+  /// <param name="canonical">When this method returns, contains the qualified reference if qualification succeeded, or null if it failed.</param>
+  /// <param name="reason">When this method returns, contains an error message if qualification failed, or null if it succeeded.</param>
+  /// <returns>true if qualification succeeded; otherwise, false.</returns>
   public bool TryQualify( out QualifiedImageRef? canonical, out string? reason ) {
     try {
       canonical = Qualify();
       reason = null;
       return true;
     }
+#pragma warning disable CA1031
     catch ( Exception ex ) {
+#pragma warning restore CA1031
       canonical = null;
       reason = ex.Message;
       return false;
@@ -127,24 +225,33 @@ public sealed partial record PartialImageRef : ImageRef {
   /// <summary>
   /// Returns a new instance with a different cosmetic tag.
   /// </summary>
+  /// <param name="tag">The tag to use, or null to remove the tag.</param>
+  /// <returns>A new <see cref="PartialImageRef"/> with the specified tag.</returns>
   public PartialImageRef With( Tag? tag ) =>
     new(Repository, tag, Registry, Namespace, Digest);
 
   /// <summary>
   /// Returns a new instance with a different registry.
   /// </summary>
+  /// <param name="registry">The registry to use, or null to remove the registry.</param>
+  /// <returns>A new <see cref="PartialImageRef"/> with the specified registry.</returns>
   public PartialImageRef With( Registry? registry ) =>
     new(Repository, Tag, registry, Namespace, Digest);
 
   /// <summary>
   /// Returns a new instance with a different registry.
   /// </summary>
+  /// <param name="registry">The registry to use.</param>
+  /// <param name="ns">The namespace to use.</param>
+  /// <returns>A new <see cref="PartialImageRef"/> with the specified registry and namespace.</returns>
   public PartialImageRef With( Registry registry, Namespace ns ) =>
     new(Repository, Tag, registry, ns, Digest);
 
   /// <summary>
   /// Returns a new instance with a different namespace.
   /// </summary>
+  /// <param name="ns">The namespace to use, or null to remove the namespace.</param>
+  /// <returns>A new <see cref="PartialImageRef"/> with the specified namespace.</returns>
   public PartialImageRef With( Namespace? ns ) =>
     // TODO remember registry/namespace requirement
     new(Repository, Tag, Registry, ns, Digest);
@@ -152,12 +259,20 @@ public sealed partial record PartialImageRef : ImageRef {
   /// <summary>
   /// Returns a new instance with a different digest.
   /// </summary>
+  /// <param name="digest">The digest to use, or null to remove the digest.</param>
+  /// <returns>A new <see cref="PartialImageRef"/> with the specified digest.</returns>
   public PartialImageRef With( Digest? digest ) =>
     new(Repository, Tag, Registry, Namespace, digest);
 
+  /// <summary>
+  /// Gets a value indicating whether this reference has all required components for qualification.
+  /// </summary>
   public override bool IsQualified => Registry != null && ( !Registry.NamespaceRequired || Namespace != null ) &&
                                       ( Tag != null || Digest != null );
 
+  /// <summary>
+  /// Gets a value indicating whether this reference can be qualified using default conventions.
+  /// </summary>
   public bool CanQualify => TryQualify( out _, out _ );
 
   /// <summary>
@@ -182,7 +297,6 @@ public sealed partial record PartialImageRef : ImageRef {
     return new QualifiedImageRef( registry, ns, repo, tag, Digest );
   }
 
-
   /// <summary>
   /// Canonicalizes the image reference using the current digest.
   /// </summary>
@@ -196,7 +310,6 @@ public sealed partial record PartialImageRef : ImageRef {
   ) {
     return Qualify( qualificationMode ).Canonicalize( canonicalizationMode );
   }
-
 
   /// <summary>
   /// Canonicalizes the image reference with a specific digest.

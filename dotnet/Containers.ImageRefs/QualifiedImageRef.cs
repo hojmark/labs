@@ -12,6 +12,9 @@ namespace HLabs.Containers.ImageRefs;
 /// Must have either a tag or digest.
 /// </summary>
 public sealed record QualifiedImageRef : ImageRef {
+  /// <summary>
+  /// Gets the registry for this image reference.
+  /// </summary>
   public new Registry Registry {
     get;
   }
@@ -32,12 +35,17 @@ public sealed record QualifiedImageRef : ImageRef {
   /// <summary>
   /// Returns a new instance with a different tag.
   /// </summary>
+  /// <param name="tag">The tag to use.</param>
+  /// <returns>A new <see cref="QualifiedImageRef"/> with the specified tag.</returns>
   public QualifiedImageRef WithTag( Tag tag ) =>
     new(Registry, Namespace, Repository, tag, Digest);
 
   /// <summary>
   /// Returns a new instance with a different registry.
   /// </summary>
+  /// <param name="registry">The registry to use.</param>
+  /// <param name="ns">Optional namespace to use; if not provided, uses the current namespace.</param>
+  /// <returns>A new <see cref="QualifiedImageRef"/> with the specified registry and namespace.</returns>
   public QualifiedImageRef On( Registry registry, Namespace? ns = null ) =>
     new(registry, ns ?? Namespace, Repository, Tag, Digest);
 
@@ -59,6 +67,7 @@ public sealed record QualifiedImageRef : ImageRef {
   /// Creates a digest-pinned image reference using the current digest.
   /// </summary>
   /// <param name="mode">Specifies whether to maintain or exclude the tag in the canonical reference.</param>
+  /// <returns>A canonical (immutable) image reference.</returns>
   /// <exception cref="InvalidOperationException">Thrown when digest is not present.</exception>
   public CanonicalImageRef Canonicalize( CanonicalizationMode mode = CanonicalizationMode.ExcludeTag ) {
     if ( Digest is null ) {
@@ -70,8 +79,16 @@ public sealed record QualifiedImageRef : ImageRef {
     return new CanonicalImageRef( Registry, Namespace, Repository, Digest, tag );
   }
 
+  /// <summary>
+  /// Gets a value indicating whether this reference has a fully qualified registry.
+  /// Always true for qualified references as they always have a registry.
+  /// </summary>
   public override bool IsQualified => true;
 
+  /// <summary>
+  /// Returns a string representation of this qualified image reference.
+  /// </summary>
+  /// <returns>A string representation of this qualified image reference.</returns>
   public override string ToString() {
     var nsPart = Namespace is not null ? $"{Namespace}/" : string.Empty;
     var tagPart = Tag is not null ? $":{Tag}" : string.Empty;

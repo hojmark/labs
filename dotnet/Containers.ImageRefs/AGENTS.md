@@ -62,8 +62,7 @@ dotnet/
 
 - Keep usage examples up to date in project README.md
 - XML docs on all public APIs with `<summary>`, `<param>`, `<returns>`, `<exception>` being required.
-    - If a parameter is non-nullable but is still checked for null, `<exception cref="ArgumentNullException">` should
-      not be documented.
+    - Do not add `<exception cref="ArgumentException">` if the exception is thrown because of null argumment and the argument is non-nullable.
     - `private`, `internal` and `private protected` types/methods do not need XML docs but should still be
       well-commented if their logic is complex.
 - Include `<example>` tags showing valid/invalid inputs where appropriate.

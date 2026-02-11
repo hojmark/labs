@@ -10,6 +10,13 @@ public sealed partial record PartialImageRef {
   )]
   private static partial Regex ImageRefRegex();
 
+  /// <summary>
+  /// Parses a string representation of an image reference.
+  /// </summary>
+  /// <param name="imageReference">The string to parse.</param>
+  /// <returns>A parsed <see cref="PartialImageRef"/>.</returns>
+  /// <exception cref="ArgumentNullException">Thrown when imageReference is null.</exception>
+  /// <exception cref="FormatException">Thrown when imageReference is not in a valid format.</exception>
   public static PartialImageRef Parse( string imageReference ) {
     ArgumentNullException.ThrowIfNull( imageReference );
 
@@ -33,6 +40,12 @@ public sealed partial record PartialImageRef {
     return new PartialImageRef( repository, tag, registry, @namespace, digest );
   }
 
+  /// <summary>
+  /// Tries to parse a string representation of an image reference.
+  /// </summary>
+  /// <param name="input">The string to parse.</param>
+  /// <param name="reference">When this method returns, contains the parsed reference if parsing succeeded, or null if it failed.</param>
+  /// <returns>true if parsing succeeded; otherwise, false.</returns>
   public static bool TryParse( string? input, out PartialImageRef? reference ) {
     try {
       if ( input is null ) {

@@ -248,4 +248,5 @@ dotnet_diagnostic.CA1806.severity = suggestion
 # A property should not follow a method
 dotnet_diagnostic.SA1201.severity = none
 # Instance of NullForgiving operator without justification detected
+dotnet_diagnostic.NX0001.severity = suggestion
 dotnet_diagnostic.NX0002.severity = suggestion

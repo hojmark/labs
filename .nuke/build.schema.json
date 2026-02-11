@@ -25,6 +25,8 @@
       "type": "string",
       "enum": [
         "Build",
+        "CheckBuildWarnings",
+        "CheckWarnings",
         "Clean",
         "CleanProjects",
         "Pack",

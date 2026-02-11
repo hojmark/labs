@@ -31,8 +31,12 @@ internal sealed class CanonicalImageRefTests {
 
   [Test]
   public async Task ConstructWithCustomRegistry() {
-    var canonical = new PartialImageRef( Registry.GitHub, new Namespace( "myorg" ), new Repository( "myapp" ),
-        null, new Digest( ValidDigest ) )
+    var canonical = new PartialImageRef(
+        Registry.GitHub,
+        new Namespace( "myorg" ),
+        new Repository( "myapp" ),
+        new Digest( ValidDigest )
+      )
       .Canonicalize();
 
     await Assert.That( canonical.Registry ).IsEqualTo( Registry.GitHub );
@@ -92,8 +96,12 @@ internal sealed class CanonicalImageRefTests {
 
   [Test]
   public async Task ToStringWithCustomRegistry() {
-    var canonical = new PartialImageRef( Registry.GitHub, new Namespace( "myorg" ), new Repository( "myapp" ),
-        null, new Digest( ValidDigest ) )
+    var canonical = new PartialImageRef(
+        Registry.GitHub,
+        new Namespace( "myorg" ),
+        new Repository( "myapp" ),
+        new Digest( ValidDigest )
+      )
       .Canonicalize();
     await Assert.That( canonical.ToString() ).IsEqualTo( $"ghcr.io/myorg/myapp@{ValidDigest}" );
   }
@@ -107,8 +115,13 @@ internal sealed class CanonicalImageRefTests {
 
   [Test]
   public async Task ToStringShowsTagWhenPresent() {
-    var canonical = new PartialImageRef( Registry.GitHub, new Namespace( "myorg" ), new Repository( "myapp" ),
-        new Tag( "v1.0" ), new Digest( ValidDigest ) )
+    var canonical = new PartialImageRef(
+        Registry.GitHub,
+        new Namespace( "myorg" ),
+        new Repository( "myapp" ),
+        new Tag( "v1.0" ),
+        new Digest( ValidDigest )
+      )
       .Canonicalize( CanonicalizationMode.MaintainTag );
     await Assert.That( canonical.ToString() ).IsEqualTo( $"ghcr.io/myorg/myapp:v1.0@{ValidDigest}" );
   }
@@ -259,11 +272,19 @@ internal sealed class CanonicalImageRefTests {
 
   [Test]
   public async Task DifferentRegistriesAreNotEqual() {
-    var a = new PartialImageRef( Registry.DockerHub, new Namespace( "library" ), new Repository( "nginx" ),
-        null, new Digest( ValidDigest ) )
+    var a = new PartialImageRef(
+        Registry.DockerHub,
+        new Namespace( "library" ),
+        new Repository( "nginx" ),
+        new Digest( ValidDigest )
+      )
       .Canonicalize();
-    var b = new PartialImageRef( Registry.GitHub, new Namespace( "library" ), new Repository( "nginx" ),
-        null, new Digest( ValidDigest ) )
+    var b = new PartialImageRef(
+        Registry.GitHub,
+        new Namespace( "library" ),
+        new Repository( "nginx" ),
+        new Digest( ValidDigest )
+      )
       .Canonicalize();
 
     await Assert.That( a ).IsNotEqualTo( b );
@@ -313,16 +334,20 @@ internal sealed class CanonicalImageRefTests {
 
   [Test]
   public async Task ToStringCanBeParsedBack() {
-    var original =
-      new PartialImageRef( Registry.GitHub, new Namespace( "myorg" ), new Repository( "myapp" ), Tag.Latest,
-          new Digest( ValidDigest ) )
-        .Canonicalize();
+    var original = new PartialImageRef(
+        Registry.GitHub,
+        new Namespace( "myorg" ),
+        new Repository( "myapp" ),
+        Tag.Latest,
+        new Digest( ValidDigest )
+      )
+      .Canonicalize();
     var str = original.ToString();
     var parsed = PartialImageRef.Parse( str );
     var canonical = parsed.Canonicalize();
 
     await Assert.That( canonical.Registry.ToString() ).IsEqualTo( original.Registry.ToString() );
-    await Assert.That( canonical.Namespace.ToString() ).IsEqualTo( original.Namespace.ToString() );
+    await Assert.That( canonical.Namespace!.ToString() ).IsEqualTo( original.Namespace!.ToString() );
     await Assert.That( canonical.Repository ).IsEqualTo( original.Repository );
     await Assert.That( canonical.Tag ).IsEqualTo( original.Tag );
     await Assert.That( canonical.Digest ).IsEqualTo( original.Digest );

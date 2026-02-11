@@ -16,4 +16,3 @@ public enum CanonicalizationMode {
   /// </summary>
   MaintainTag
 }
-
