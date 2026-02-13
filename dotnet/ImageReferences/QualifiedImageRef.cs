@@ -35,17 +35,41 @@ public sealed record QualifiedImageRef : ImageRef {
   /// </summary>
   /// <param name="tag">The tag to use.</param>
   /// <returns>A new <see cref="QualifiedImageRef"/> with the specified tag.</returns>
-  public QualifiedImageRef WithTag( Tag tag ) =>
+  public QualifiedImageRef With( Tag? tag ) =>
     new(Registry, Namespace, Repository, tag, Digest);
 
   /// <summary>
   /// Returns a new instance with a different registry.
   /// </summary>
   /// <param name="registry">The registry to use.</param>
-  /// <param name="ns">Optional namespace to use; if not provided, uses the current namespace.</param>
+  /// <returns>A new <see cref="QualifiedImageRef"/> with the specified registry.</returns>
+  public QualifiedImageRef With( Registry registry ) =>
+    new(registry, Namespace, Repository, Tag, Digest);
+
+  /// <summary>
+  /// Returns a new instance with a different registry and namespace.
+  /// </summary>
+  /// <param name="registry">The registry to use.</param>
+  /// <param name="ns">The namespace to use.</param>
   /// <returns>A new <see cref="QualifiedImageRef"/> with the specified registry and namespace.</returns>
-  public QualifiedImageRef On( Registry registry, Namespace? ns = null ) =>
-    new(registry, ns ?? Namespace, Repository, Tag, Digest);
+  public QualifiedImageRef With( Registry registry, Namespace ns ) =>
+    new(registry, ns, Repository, Tag, Digest);
+
+  /// <summary>
+  /// Returns a new instance with a different namespace.
+  /// </summary>
+  /// <param name="ns">The namespace to use.</param>
+  /// <returns>A new <see cref="QualifiedImageRef"/> with the specified namespace.</returns>
+  public QualifiedImageRef With( Namespace? ns ) =>
+    new(Registry, ns, Repository, Tag, Digest);
+
+  /// <summary>
+  /// Returns a new instance with a different digest.
+  /// </summary>
+  /// <param name="digest">The digest to use.</param>
+  /// <returns>A new <see cref="QualifiedImageRef"/> with the specified digest.</returns>
+  public QualifiedImageRef With( Digest? digest ) =>
+    new(Registry, Namespace, Repository, Tag, digest);
 
   /// <summary>
   /// Creates a digest-pinned image reference.

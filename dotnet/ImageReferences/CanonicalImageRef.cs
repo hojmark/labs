@@ -37,7 +37,7 @@ public sealed record CanonicalImageRef : ImageRef {
   /// </summary>
   /// <param name="tag">The tag to apply to the new reference.</param>
   /// <returns>A new <see cref="CanonicalImageRef"/> with the specified tag.</returns>
-  public CanonicalImageRef WithTag( Tag tag ) =>
+  public CanonicalImageRef With( Tag tag ) =>
     new(Registry, Namespace, Repository, Digest, tag);
 
   /// <summary>
@@ -45,16 +45,33 @@ public sealed record CanonicalImageRef : ImageRef {
   /// </summary>
   /// <param name="registry">The registry to use for the new reference.</param>
   /// <returns>A new <see cref="CanonicalImageRef"/> with the specified registry.</returns>
-  public CanonicalImageRef On( Registry registry ) =>
+  public CanonicalImageRef With( Registry registry ) =>
     new(registry, Namespace, Repository, Digest, Tag);
+
+  /// <summary>
+  /// Returns a new instance with a different registry and namespace.
+  /// </summary>
+  /// <param name="registry">The registry to use for the new reference.</param>
+  /// <param name="ns">The namespace to use for the new reference.</param>
+  /// <returns>A new <see cref="CanonicalImageRef"/> with the specified registry and namespace.</returns>
+  public CanonicalImageRef With( Registry registry, Namespace ns ) =>
+    new(registry, ns, Repository, Digest, Tag);
 
   /// <summary>
   /// Returns a new instance with a different namespace.
   /// </summary>
   /// <param name="ns">The namespace to use for the new reference.</param>
   /// <returns>A new <see cref="CanonicalImageRef"/> with the specified namespace.</returns>
-  public CanonicalImageRef WithNamespace( Namespace ns ) =>
+  public CanonicalImageRef With( Namespace ns ) =>
     new(Registry, ns, Repository, Digest, Tag);
+
+  /// <summary>
+  /// Returns a new instance with a different digest.
+  /// </summary>
+  /// <param name="digest">The digest to use.</param>
+  /// <returns>A new <see cref="CanonicalImageRef"/> with the specified digest.</returns>
+  public QualifiedImageRef With( Digest? digest ) =>
+    new(Registry, Namespace, Repository, Tag, digest);
 
   /// <summary>
   /// Gets a value indicating whether this reference has a fully qualified registry.
