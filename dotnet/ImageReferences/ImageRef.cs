@@ -5,15 +5,6 @@ namespace HLabs.ImageReferences;
 /// </summary>
 public abstract record ImageRef {
   /// <summary>
-  /// Initializes a new instance of the <see cref="ImageRef"/> class.
-  /// </summary>
-  /// <param name="repository">The repository name. Cannot be null.</param>
-  /// <exception cref="ArgumentNullException">Thrown when repository is null.</exception>
-  private protected ImageRef( Repository repository ) {
-    Repository = repository ?? throw new ArgumentNullException( nameof(repository) );
-  }
-
-  /// <summary>
   /// Gets the registry where the image is hosted (e.g., docker.io, ghcr.io).
   /// May be null for partial references.
   /// </summary>
@@ -24,7 +15,7 @@ public abstract record ImageRef {
 
 #pragma warning disable CA1716
   /// <summary>
-  /// Gets the namespace within the registry (e.g., organization or user name).
+  /// Gets the namespace within the registry (e.g., organization or username).
   /// May be null for partial references or registries that don't require namespaces.
   /// </summary>
   public Namespace? Namespace {
@@ -35,14 +26,16 @@ public abstract record ImageRef {
 
   /// <summary>
   /// Gets the repository name (e.g., nginx, ubuntu, myapp).
+  /// May be null for partial references.
   /// </summary>
-  public Repository Repository {
+  public Repository? Repository {
     get;
+    protected init;
   }
 
   /// <summary>
   /// Gets the tag that identifies a version or variant (e.g., latest, v1.0, alpine).
-  /// May be null for digest-only references.
+  /// May be null for partial references or qualified references with a digest.
   /// </summary>
   public Tag? Tag {
     get;
@@ -51,21 +44,10 @@ public abstract record ImageRef {
 
   /// <summary>
   /// Gets the content-addressable digest that uniquely identifies image content.
-  /// May be null for tag-only references.
+  /// May be null for partial references or qualified references with a tag.
   /// </summary>
   public Digest? Digest {
     get;
     protected init;
   }
-
-  /// <summary>
-  /// Gets a value indicating whether this reference is pinned by a <see cref="Digest"/>.
-  /// </summary>
-  public virtual bool IsPinned => Digest is not null;
-
-  /// <summary>
-  /// Gets a value indicating whether this reference can identify a specific image (has at least a tag or digest).
-  /// Note: a tag-based canonical reference is not pinned — the tag can be moved to a different image.
-  /// </summary>
-  public abstract bool IsQualified { get; }
 }

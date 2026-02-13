@@ -11,16 +11,23 @@ namespace HLabs.ImageReferences;
 /// </summary>
 public sealed record QualifiedImageRef : ImageRef {
   /// <summary>
-  /// Gets the registry for this image reference.
+  /// Gets the registry.
   /// </summary>
   public new Registry Registry {
     get;
   }
 
-  internal QualifiedImageRef( Registry registry, Namespace? ns, Repository repository, Tag? tag, Digest? digest ) :
-    base( repository ) {
+  /// <summary>
+  /// Gets the repository.
+  /// </summary>
+  public new Repository Repository {
+    get;
+  }
+
+  internal QualifiedImageRef( Registry registry, Namespace? ns, Repository repository, Tag? tag, Digest? digest ) {
     Registry = registry ?? throw new ArgumentNullException( nameof(registry) );
     Namespace = ns ?? ( Registry.NamespaceRequired ? throw new ArgumentNullException( nameof(ns) ) : null );
+    Repository = repository ?? throw new ArgumentNullException( nameof(repository) );
 
     if ( tag is null && digest is null ) {
       throw new InvalidOperationException( "Canonical image reference must have either a tag or a digest." );
@@ -100,12 +107,6 @@ public sealed record QualifiedImageRef : ImageRef {
     var tag = mode == CanonicalizationMode.MaintainTag ? Tag : null;
     return new CanonicalImageRef( Registry, Namespace, Repository, Digest, tag );
   }
-
-  /// <summary>
-  /// Gets a value indicating whether this reference has a fully qualified registry.
-  /// Always true for qualified references as they always have a registry.
-  /// </summary>
-  public override bool IsQualified => true;
 
   /// <summary>
   /// Returns a string representation of this qualified image reference.

@@ -15,14 +15,15 @@ namespace HLabs.ImageReferences;
 /// </summary>
 public sealed partial record PartialImageRef : ImageRef {
   private PartialImageRef(
-    Repository repository,
+    Repository? repository,
 #pragma warning disable S3427
     Tag? tag = null,
 #pragma warning restore S3427
     Registry? registry = null,
     Namespace? @namespace = null,
     Digest? digest = null
-  ) : base( repository ) {
+  ) {
+    Repository = repository;
     Tag = tag;
     Registry = registry;
     Namespace = @namespace;
@@ -126,7 +127,7 @@ public sealed partial record PartialImageRef : ImageRef {
   /// <param name="registry">The registry.</param>
   /// <param name="repository">The repository name.</param>
   /// <param name="digest">The digest.</param>
-  public PartialImageRef( Registry registry, Repository repository, Digest digest )
+  public PartialImageRef( Registry registry, Repository? repository, Digest digest )
     : this( repository, null, registry, null, digest ) {
   }
 
@@ -187,38 +188,6 @@ public sealed partial record PartialImageRef : ImageRef {
 
   #endregion
 
-  /// <summary>
-  /// Returns a string representation of this image reference.
-  /// </summary>
-  /// <returns>A string representation of this image reference.</returns>
-  public override string ToString() {
-    var reg = Registry is null ? string.Empty : $"{Registry}/";
-    var ns = Namespace is null ? string.Empty : $"{Namespace}/";
-    var tag = Tag is null ? string.Empty : $":{Tag}";
-    var digest = Digest is null ? string.Empty : $"@{Digest}";
-    return $"{reg}{ns}{Repository}{tag}{digest}";
-  }
-
-  /// <summary>
-  /// Tries to convert this partial reference to a qualified reference by applying default conventions.
-  /// </summary>
-  /// <param name="canonical">When this method returns, contains the qualified reference if qualification succeeded, or null if it failed.</param>
-  /// <param name="reason">When this method returns, contains an error message if qualification failed, or null if it succeeded.</param>
-  /// <returns>true if qualification succeeded; otherwise, false.</returns>
-  public bool TryQualify( out QualifiedImageRef? canonical, out string? reason ) {
-    try {
-      canonical = Qualify();
-      reason = null;
-      return true;
-    }
-#pragma warning disable CA1031
-    catch ( Exception ex ) {
-#pragma warning restore CA1031
-      canonical = null;
-      reason = ex.Message;
-      return false;
-    }
-  }
 
   /// <summary>
   /// Returns a new instance with the specified tag.
@@ -263,15 +232,25 @@ public sealed partial record PartialImageRef : ImageRef {
     new(Repository, Tag, Registry, Namespace, digest);
 
   /// <summary>
-  /// Gets a value indicating whether this reference has all required components for qualification.
+  /// Tries to convert this partial reference to a qualified reference by applying default conventions.
   /// </summary>
-  public override bool IsQualified => Registry != null && ( !Registry.NamespaceRequired || Namespace != null ) &&
-                                      ( Tag != null || Digest != null );
-
-  /// <summary>
-  /// Gets a value indicating whether this reference can be qualified using default conventions.
-  /// </summary>
-  public bool CanQualify => TryQualify( out _, out _ );
+  /// <param name="canonical">When this method returns, contains the qualified reference if qualification succeeded, or null if it failed.</param>
+  /// <param name="reason">When this method returns, contains an error message if qualification failed, or null if it succeeded.</param>
+  /// <returns>true if qualification succeeded; otherwise, false.</returns>
+  public bool TryQualify( out QualifiedImageRef? canonical, out string? reason ) {
+    try {
+      canonical = Qualify();
+      reason = null;
+      return true;
+    }
+#pragma warning disable CA1031
+    catch ( Exception ex ) {
+#pragma warning restore CA1031
+      canonical = null;
+      reason = ex.Message;
+      return false;
+    }
+  }
 
   /// <summary>
   /// Converts this reference to a canonical form.
@@ -322,5 +301,17 @@ public sealed partial record PartialImageRef : ImageRef {
     QualificationMode qualificationMode = QualificationMode.DefaultFilling
   ) {
     return With( digest ).Canonicalize( canonicalizationMode, qualificationMode );
+  }
+
+  /// <summary>
+  /// Returns a string representation of this image reference.
+  /// </summary>
+  /// <returns>A string representation of this image reference.</returns>
+  public override string ToString() {
+    var reg = Registry is null ? string.Empty : $"{Registry}/";
+    var ns = Namespace is null ? string.Empty : $"{Namespace}/";
+    var tag = Tag is null ? string.Empty : $":{Tag}";
+    var digest = Digest is null ? string.Empty : $"@{Digest}";
+    return $"{reg}{ns}{Repository}{tag}{digest}";
   }
 }

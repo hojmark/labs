@@ -13,6 +13,13 @@ public sealed record CanonicalImageRef : ImageRef {
   }
 
   /// <summary>
+  /// Gets the repository.
+  /// </summary>
+  public new Repository Repository {
+    get;
+  }
+
+  /// <summary>
   /// Gets the digest.
   /// </summary>
   public new Digest Digest {
@@ -25,11 +32,12 @@ public sealed record CanonicalImageRef : ImageRef {
     Repository repository,
     Digest digest,
     Tag? tag = null
-  ) : base( repository ) {
+  ) {
     Registry = registry ?? throw new ArgumentNullException( nameof(registry) );
     Namespace = ns ?? ( Registry.NamespaceRequired ? throw new ArgumentNullException( nameof(ns) ) : null );
+    Repository = repository ?? throw new ArgumentNullException( nameof(repository) );
     Digest = digest ?? throw new ArgumentNullException( nameof(digest) );
-    Tag = tag; // optional, does not affect immutability
+    Tag = tag; // Cosmetic
   }
 
   /// <summary>
@@ -74,18 +82,6 @@ public sealed record CanonicalImageRef : ImageRef {
     new(Registry, ns, Repository, Digest, Tag);
 
   /// <summary>
-  /// Gets a value indicating whether this reference has a fully qualified registry.
-  /// Always true for canonical references as they always have a registry.
-  /// </summary>
-  public override bool IsQualified => true;
-
-  /// <summary>
-  /// Gets a value indicating whether this reference is pinned by a digest.
-  /// Always true for canonical references as they always have a digest.
-  /// </summary>
-  public override bool IsPinned => true;
-
-  /// <summary>
   /// Returns a string representation of this canonical image reference,
   /// including the registry, namespace (if present), repository, digest, and tag (if present).
   /// </summary>
@@ -93,7 +89,7 @@ public sealed record CanonicalImageRef : ImageRef {
   public override string ToString() {
     var nsPart = Namespace is not null ? $"{Namespace}/" : string.Empty;
     return Tag is not null
-      ? $"{Registry}/{nsPart}{Repository}:{Tag}@{Digest}" // shows tag + digest
+      ? $"{Registry}/{nsPart}{Repository}:{Tag}@{Digest}"
       : $"{Registry}/{nsPart}{Repository}@{Digest}";
   }
 }
