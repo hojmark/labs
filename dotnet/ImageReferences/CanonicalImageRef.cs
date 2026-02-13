@@ -1,5 +1,3 @@
-using HLabs.ImageReferences.Components;
-
 namespace HLabs.ImageReferences;
 
 /// <summary>

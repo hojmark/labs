@@ -1,4 +1,3 @@
-using HLabs.ImageReferences.Components;
 using Semver;
 
 namespace HLabs.ImageReferences.Tests;

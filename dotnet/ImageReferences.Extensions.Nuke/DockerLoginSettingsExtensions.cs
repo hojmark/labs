@@ -1,5 +1,4 @@
-﻿using HLabs.ImageReferences.Components;
-using Nuke.Common.Tools.Docker;
+﻿using Nuke.Common.Tools.Docker;
 
 namespace HLabs.ImageReferences.Extensions.Nuke;
 

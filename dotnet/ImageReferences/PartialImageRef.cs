@@ -1,5 +1,3 @@
-using HLabs.ImageReferences.Components;
-
 namespace HLabs.ImageReferences;
 
 // TODO support platform
@@ -263,6 +261,181 @@ public sealed partial record PartialImageRef : ImageRef {
   /// <returns>A new <see cref="PartialImageRef"/> with the specified digest.</returns>
   public PartialImageRef With( Digest? digest ) =>
     new(Repository, Tag, Registry, Namespace, digest);
+
+  // Additional fluent builder methods for better discoverability
+  
+  /// <summary>
+  /// Returns a new instance with a different tag.
+  /// Alias for <see cref="With(Tag?)"/> for better fluent API discoverability.
+  /// </summary>
+  /// <param name="tag">The tag to use, or null to remove the tag.</param>
+  /// <returns>A new <see cref="PartialImageRef"/> with the specified tag.</returns>
+  public PartialImageRef WithTag( Tag? tag ) => With( tag );
+
+  /// <summary>
+  /// Returns a new instance with a different tag.
+  /// </summary>
+  /// <param name="tag">The tag to use as a string.</param>
+  /// <returns>A new <see cref="PartialImageRef"/> with the specified tag.</returns>
+  public PartialImageRef WithTag( string tag ) => With( new Tag( tag ) );
+
+  /// <summary>
+  /// Returns a new instance with a different registry.
+  /// Alias for <see cref="With(Registry?)"/> for better fluent API discoverability.
+  /// </summary>
+  /// <param name="registry">The registry to use, or null to remove the registry.</param>
+  /// <returns>A new <see cref="PartialImageRef"/> with the specified registry.</returns>
+  public PartialImageRef WithRegistry( Registry? registry ) => With( registry );
+
+  /// <summary>
+  /// Returns a new instance with a different registry.
+  /// </summary>
+  /// <param name="registryHostname">The registry hostname to use as a string.</param>
+  /// <returns>A new <see cref="PartialImageRef"/> with the specified registry.</returns>
+  public PartialImageRef WithRegistry( string registryHostname ) => With( new Registry( registryHostname ) );
+
+  /// <summary>
+  /// Returns a new instance with a different namespace.
+  /// Alias for <see cref="With(Namespace?)"/> for better fluent API discoverability.
+  /// </summary>
+  /// <param name="ns">The namespace to use, or null to remove the namespace.</param>
+  /// <returns>A new <see cref="PartialImageRef"/> with the specified namespace.</returns>
+  public PartialImageRef WithNamespace( Namespace? ns ) => With( ns );
+
+  /// <summary>
+  /// Returns a new instance with a different namespace.
+  /// </summary>
+  /// <param name="ns">The namespace to use as a string.</param>
+  /// <returns>A new <see cref="PartialImageRef"/> with the specified namespace.</returns>
+  public PartialImageRef WithNamespace( string ns ) => With( new Namespace( ns ) );
+
+  /// <summary>
+  /// Returns a new instance with a different digest.
+  /// Alias for <see cref="With(Digest?)"/> for better fluent API discoverability.
+  /// </summary>
+  /// <param name="digest">The digest to use, or null to remove the digest.</param>
+  /// <returns>A new <see cref="PartialImageRef"/> with the specified digest.</returns>
+  public PartialImageRef WithDigest( Digest? digest ) => With( digest );
+
+  /// <summary>
+  /// Returns a new instance with a different digest.
+  /// </summary>
+  /// <param name="digest">The digest to use as a string.</param>
+  /// <returns>A new <see cref="PartialImageRef"/> with the specified digest.</returns>
+  public PartialImageRef WithDigest( string digest ) => With( new Digest( digest ) );
+
+  /// <summary>
+  /// Configures this image for a specific registry and namespace.
+  /// </summary>
+  /// <param name="registry">The registry to use.</param>
+  /// <param name="ns">The namespace to use.</param>
+  /// <returns>A new <see cref="PartialImageRef"/> with the specified registry and namespace.</returns>
+  public PartialImageRef On( Registry registry, Namespace ns ) => With( registry, ns );
+
+  /// <summary>
+  /// Configures this image for a specific registry and namespace.
+  /// </summary>
+  /// <param name="registryHostname">The registry hostname to use as a string.</param>
+  /// <param name="ns">The namespace to use as a string.</param>
+  /// <returns>A new <see cref="PartialImageRef"/> with the specified registry and namespace.</returns>
+  public PartialImageRef On( string registryHostname, string ns ) => 
+    With( new Registry( registryHostname ), new Namespace( ns ) );
+
+  /// <summary>
+  /// Configures this image for a specific registry.
+  /// </summary>
+  /// <param name="registry">The registry to use.</param>
+  /// <returns>A new <see cref="PartialImageRef"/> with the specified registry.</returns>
+  public PartialImageRef On( Registry registry ) => With( registry );
+
+  /// <summary>
+  /// Configures this image for a specific registry.
+  /// </summary>
+  /// <param name="registryHostname">The registry hostname to use as a string.</param>
+  /// <returns>A new <see cref="PartialImageRef"/> with the specified registry.</returns>
+  public PartialImageRef On( string registryHostname ) => With( new Registry( registryHostname ) );
+
+  /// <summary>
+  /// Configures this image for a specific namespace.
+  /// </summary>
+  /// <param name="ns">The namespace to use.</param>
+  /// <returns>A new <see cref="PartialImageRef"/> with the specified namespace.</returns>
+  public PartialImageRef In( Namespace ns ) => With( ns );
+
+  /// <summary>
+  /// Configures this image for a specific namespace.
+  /// </summary>
+  /// <param name="ns">The namespace to use as a string.</param>
+  /// <returns>A new <see cref="PartialImageRef"/> with the specified namespace.</returns>
+  public PartialImageRef In( string ns ) => With( new Namespace( ns ) );
+
+  // Static factory methods as alternatives to constructors
+
+  /// <summary>
+  /// Creates a partial image reference from a repository name.
+  /// Alternative to using constructors.
+  /// </summary>
+  /// <param name="repository">The repository name.</param>
+  /// <returns>A new <see cref="PartialImageRef"/>.</returns>
+  public static PartialImageRef From( Repository repository ) => new(repository);
+
+  /// <summary>
+  /// Creates a partial image reference from a repository name.
+  /// Alternative to using constructors.
+  /// </summary>
+  /// <param name="repository">The repository name as a string.</param>
+  /// <returns>A new <see cref="PartialImageRef"/>.</returns>
+  public static PartialImageRef From( string repository ) => new(new Repository( repository ));
+
+  /// <summary>
+  /// Creates a partial image reference from a repository and tag.
+  /// Alternative to using constructors.
+  /// </summary>
+  /// <param name="repository">The repository name.</param>
+  /// <param name="tag">The tag.</param>
+  /// <returns>A new <see cref="PartialImageRef"/>.</returns>
+  public static PartialImageRef From( string repository, string tag ) => 
+    new(new Repository( repository ), new Tag( tag ));
+
+  /// <summary>
+  /// Creates a partial image reference for the localhost registry.
+  /// Convenient factory method for development scenarios.
+  /// </summary>
+  /// <param name="repository">The repository name.</param>
+  /// <param name="tag">The tag (optional, defaults to "latest").</param>
+  /// <returns>A new <see cref="PartialImageRef"/> configured for localhost.</returns>
+  public static PartialImageRef Localhost( string repository, string? tag = null ) =>
+    From( repository )
+      .WithRegistry( Registry.Localhost )
+      .WithTag( tag ?? "latest" );
+
+  /// <summary>
+  /// Creates a partial image reference for GitHub Container Registry.
+  /// Convenient factory method for GitHub-hosted images.
+  /// </summary>
+  /// <param name="namespace">The GitHub organization or username.</param>
+  /// <param name="repository">The repository name.</param>
+  /// <param name="tag">The tag (optional, defaults to "latest").</param>
+  /// <returns>A new <see cref="PartialImageRef"/> configured for GitHub Container Registry.</returns>
+  public static PartialImageRef GitHub( string @namespace, string repository, string? tag = null ) =>
+    From( repository )
+      .WithRegistry( Registry.GitHub )
+      .WithNamespace( @namespace )
+      .WithTag( tag ?? "latest" );
+
+  /// <summary>
+  /// Creates a partial image reference for Docker Hub.
+  /// Convenient factory method for Docker Hub-hosted images.
+  /// </summary>
+  /// <param name="namespace">The Docker Hub organization or username.</param>
+  /// <param name="repository">The repository name.</param>
+  /// <param name="tag">The tag (optional, defaults to "latest").</param>
+  /// <returns>A new <see cref="PartialImageRef"/> configured for Docker Hub.</returns>
+  public static PartialImageRef DockerHub( string @namespace, string repository, string? tag = null ) =>
+    From( repository )
+      .WithRegistry( Registry.DockerHub )
+      .WithNamespace( @namespace )
+      .WithTag( tag ?? "latest" );
 
   /// <summary>
   /// Gets a value indicating whether this reference has all required components for qualification.

@@ -1,4 +1,3 @@
-using HLabs.ImageReferences.Components;
 using Nuke.Common.Tooling;
 using Nuke.Common.Tools.Docker;
 
