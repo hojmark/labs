@@ -57,6 +57,7 @@ dotnet/
 - Coverage target: 98%+
 - Follow AAA pattern (Arrange, Act, Assert)
 - One assertion focus per test method, although multiple assertions are allowed
+- Don't run specific tests using filters. Instead run the whole test suite – it runs very quickly.
 
 ### Documentation
 

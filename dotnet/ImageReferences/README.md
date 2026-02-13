@@ -1,14 +1,6 @@
 # HLabs.ImageReferences
 
-Strongly-typed, validated container image references for .NET.
-
-Build, parse, and manipulate Docker/OCI image references (like `docker.io/library/nginx:1.25`).
-
----
-
-## Installation
-
-Install via NuGet:
+Strongly-typed container image references for .NET.
 
 ```bash
 dotnet add package HLabs.ImageReferences
@@ -17,83 +9,33 @@ dotnet add package HLabs.ImageReferences
 ## Getting Started
 
 ```csharp
-var image = new ImageReference("nginx");
-Console.WriteLine(image); // docker.io/library/nginx
-```
+var partial = "nginx".Image(); // -> nginx
 
-### Building references
+var qualified = partial.Qualified(); // docker.io/library/nginx:latest
 
-```csharp
-// Implicit construction
-var image = new ImageReference("nginx", "trixie"); // → docker.io/library/nginx:trixie
-
-// Explicit construction
-var image = new ImageReference(new Repository("nginx"), new Tag("trixie")); // → docker.io/library/nginx:trixie
-
-// Semantic Versioning support (via the Semver package)
-var image = new ImageReference("myapp", new SemVersion(3, 1, 0), Registry.GitHub, "myorg"); // → ghcr.io/myorg/myapp:3.1.0
-
-
-
-
-
-// Minimal — no tag, no digest
-var image = new ImageReference("nginx"); // → docker.io/library/nginx
-
-// With an explicit tag
-var image = new ImageReference("nginx", Tag.Latest); // → docker.io/library/nginx:latest var image = new ImageReference("nginx", "trixie"); // → docker.io/library/nginx:trixie
-
-// Digest-only (no tag)
-var image = new ImageReference("nginx", digest: new Digest("sha256:a3ed95caeb02...")); // → docker.io/library/nginx@sha256:a3ed95caeb02...
-
-// Tag + digest
-var image = new ImageReference("nginx", "trixie", digest: new Digest("sha256:a3ed95caeb02...")); // → docker.io/library/nginx:trixie@sha256:a3ed95caeb02...
-
-// Semantic Versioning support (via the Semver package)
-var image = new ImageReference("myapp", new SemVersion(3, 1, 0), Registry.GitHub, "myorg"); // → ghcr.io/myorg/myapp:3.1.0
-
+var canonical = partial.Canonical("57e903..."); // docker.io/library/nginx@sha256:57e903...
 ```
 
 ### Parsing references
 
 ```csharp
-var image = ImageReference.Parse("ghcr.io/myorg/myapp:3.1.0");
-Console.WriteLine(image.Registry); // ghcr.io
-Console.WriteLine(image.Namespace); // myorg
-Console.WriteLine(image.Repository); // myapp
-Console.WriteLine(image.Tag); // 3.1.0
+var image = "ghcr.io/myorg/myapp:3.1.0".Image();
 
-// Tag is null when not present in the input
-var image = ImageReference.Parse("docker.io/library/nginx@sha256:abc123");
-Console.WriteLine(image.Tag); // (null)
-Console.WriteLine(image.Digest); // sha256:abc123
+Registry   reg  = image.Registry; // ghcr.io
+Namespace  ns   = image.Namespace; // myorg
+Repository repo = image.Repository; // myapp
+Tag        tag  = image.Tag; // 3.1.0
 ```
 
-### `IsCanonical` and `IsImmutable`
+### Modifying references
+
+You are always guarenteed to have a structurally valid reference when modifying:
 
 ```csharp
-var bare = new ImageReference("nginx"); // no tag, no digest
-bare.IsCanonical; // false — not enough info to identify a specific image
-bare.IsImmutable; // false
-
-var tagged = new ImageReference("nginx", Tag.Latest); // tag only
-tagged.IsCanonical; // true — tag resolves to an image (but may change over time)
-tagged.IsImmutable; // false — tags are mutable; "latest" can point to different images
-
-var pinned = new ImageReference("nginx", digest: new Digest("sha256:abc123")); // digest only
-pinned.IsCanonical; // true
-pinned.IsImmutable; // true — digests are content-addressable and fixed
-```
-
-### Modifying using `with` expressions
-
-`ImageReference` is a C# `record`, so you can create modified copies using `with`:
-
-```csharp
-var dev = new ImageReference("myapp", Tag.Latest, Registry.Localhost); // → localhost:5000/myapp:latest
-var prod = dev with { Registry = Registry.DockerHub, Namespace = "myorg" }; // → docker.io/myorg/myapp:latest
-var pinned = prod with { Tag = new SemVersion(2, 1, 0) }; // → docker.io/myorg/myapp:2.1.0
-var withDigest = pinned with { Digest = "sha256:a3ed95caeb02..." }; // → docker.io/myorg/myapp:2.1.0@sha256:a3ed95caeb02...
+var dev = new ImageReference( "myapp", Tag.Latest, Registry.Localhost ); // → localhost:5000/myapp:latest
+var prod = dev.With( Registry.DockerHub, "myorg" ); // → docker.io/myorg/myapp:latest
+var pinned = prod.With( new SemVersion(2, 1, 0)); // → docker.io/myorg/myapp:2.1.0
+var withDigest = pinned.With( "sha256:a3ed95caeb02..." ); // → docker.io/myorg/myapp@sha256:a3ed95caeb02...
 ```
 
 ### Built-in registries and tags
@@ -106,7 +48,7 @@ Registry.GitHub // ghcr.io
 Registry.Quay // quay.io
 Registry.Localhost // localhost:5000
 Registry.Acr("mycompany") // mycompany.azurecr.io
-Registry.Ecr("123456789", "eu-west-1") // 123456789.dkr.ecr.eu-west-1.amazonaws.com
+Registry.Ecr("1234", "eu-west-1") // 1234.dkr.ecr.eu-west-1.amazonaws.com
 
 Tag.Latest // latest
 ```
@@ -116,12 +58,17 @@ Tag.Latest // latest
 Define your own well-known tags (or registries, repositories, etc.) using C# 14 extensions:
 
 ```csharp
-internal static class MyTagExtensions 
+static class MyExtensions 
 {
     extension(Tag) 
     {
-        public static Tag Dev => new("dev");
-        public static Tag Alpha(uint n) => new($"alpha-{n}"); 
+        static Tag Dev => new("dev");
+        static Tag Alpha(uint n) => new($"alpha-{n}"); 
+    }
+    
+    extension(Registry) 
+    {
+        static Registry Internal => Registry.Ecr("1234", "eu-west-1")
     }
 }
 ```
@@ -129,6 +76,6 @@ internal static class MyTagExtensions
 Then use them naturally:
 
 ```csharp
-var image = new ImageReference("myapp", Tag.Dev, Registry.Localhost); // → localhost:5000/myapp:dev
-var alpha = image with { Tag = Tag.Alpha(3) }; // → localhost:5000/myapp:alpha-3
+var image = "myapp".Image( Tag.Dev, Registry.Localhost); // → localhost:5000/myapp:dev
+var alpha = image.With( Registry.Internal, Tag.Alpha(3) ); // → 1234.dkr.ecr.eu-west-1.amazonaws.com/myapp:alpha-3
 ```
