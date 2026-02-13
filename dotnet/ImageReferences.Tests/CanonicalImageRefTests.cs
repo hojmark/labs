@@ -52,31 +52,6 @@ internal sealed class CanonicalImageRefTests {
   }
 
   // -----------------------
-  // IsQualified
-  // -----------------------
-  [Test]
-  public async Task IsQualifiedAlwaysTrue() {
-    var canonical = new PartialImageRef( "nginx", digest: new Digest( ValidDigest ) ).Canonicalize();
-    await Assert.That( canonical.IsQualified ).IsTrue();
-  }
-
-  // -----------------------
-  // IsPinned
-  // -----------------------
-  [Test]
-  public async Task IsPinnedAlwaysTrue() {
-    var canonical = new PartialImageRef( "nginx", digest: new Digest( ValidDigest ) ).Canonicalize();
-    await Assert.That( canonical.IsPinned ).IsTrue();
-  }
-
-  [Test]
-  public async Task IsPinnedTrueEvenWithTag() {
-    var canonical = new PartialImageRef( "nginx", Tag.Latest, digest: new Digest( ValidDigest ) )
-      .Canonicalize();
-    await Assert.That( canonical.IsPinned ).IsTrue();
-  }
-
-  // -----------------------
   // ToString
   // -----------------------
   [Test]
@@ -130,7 +105,7 @@ internal sealed class CanonicalImageRefTests {
   [Test]
   public async Task WithTagAddsTag() {
     var original = new PartialImageRef( "nginx", digest: new Digest( ValidDigest ) ).Canonicalize();
-    var updated = original.WithTag( Tag.Latest );
+    var updated = original.With( Tag.Latest );
 
     await Assert.That( updated.Tag ).IsEqualTo( Tag.Latest );
     await Assert.That( updated.ToString() ).IsEqualTo( $"docker.io/library/nginx:latest@{ValidDigest}" );
@@ -139,7 +114,7 @@ internal sealed class CanonicalImageRefTests {
   [Test]
   public async Task WithTagReplacesExistingTag() {
     var original = new PartialImageRef( "nginx", Tag.Latest, digest: new Digest( ValidDigest ) ).Canonicalize();
-    var updated = original.WithTag( new Tag( "alpine" ) );
+    var updated = original.With( new Tag( "alpine" ) );
 
     await Assert.That( updated.Tag ).IsEqualTo( new Tag( "alpine" ) );
     await Assert.That( updated.ToString() ).IsEqualTo( $"docker.io/library/nginx:alpine@{ValidDigest}" );
@@ -148,16 +123,15 @@ internal sealed class CanonicalImageRefTests {
   [Test]
   public async Task WithTagPreservesDigest() {
     var original = new PartialImageRef( "nginx", digest: new Digest( ValidDigest ) ).Canonicalize();
-    var updated = original.WithTag( Tag.Latest );
+    var updated = original.With( Tag.Latest );
 
     await Assert.That( updated.Digest ).IsEqualTo( new Digest( ValidDigest ) );
-    await Assert.That( updated.IsPinned ).IsTrue();
   }
 
   [Test]
   public async Task WithTagDoesNotMutateOriginal() {
     var original = new PartialImageRef( "nginx", digest: new Digest( ValidDigest ) ).Canonicalize();
-    _ = original.WithTag( Tag.Latest );
+    _ = original.With( Tag.Latest );
 
     await Assert.That( original.Tag ).IsNull();
   }
@@ -168,7 +142,7 @@ internal sealed class CanonicalImageRefTests {
   [Test]
   public async Task OnChangesRegistry() {
     var original = new PartialImageRef( "nginx", digest: new Digest( ValidDigest ) ).Canonicalize();
-    var updated = original.On( Registry.GitHub );
+    var updated = original.With( Registry.GitHub );
 
     await Assert.That( updated.Registry ).IsEqualTo( Registry.GitHub );
     await Assert.That( updated.ToString() ).IsEqualTo( $"ghcr.io/library/nginx@{ValidDigest}" );
@@ -177,16 +151,15 @@ internal sealed class CanonicalImageRefTests {
   [Test]
   public async Task OnPreservesDigest() {
     var original = new PartialImageRef( "nginx", digest: new Digest( ValidDigest ) ).Canonicalize();
-    var updated = original.On( Registry.Localhost );
+    var updated = original.With( Registry.Localhost );
 
     await Assert.That( updated.Digest ).IsEqualTo( new Digest( ValidDigest ) );
-    await Assert.That( updated.IsPinned ).IsTrue();
   }
 
   [Test]
   public async Task OnDoesNotMutateOriginal() {
     var original = new PartialImageRef( "nginx", digest: new Digest( ValidDigest ) ).Canonicalize();
-    _ = original.On( Registry.GitHub );
+    _ = original.With( Registry.GitHub );
 
     await Assert.That( original.Registry ).IsEqualTo( Registry.DockerHub );
   }
@@ -197,7 +170,7 @@ internal sealed class CanonicalImageRefTests {
   [Test]
   public async Task WithNamespaceChangesNamespace() {
     var original = new PartialImageRef( "nginx", digest: new Digest( ValidDigest ) ).Canonicalize();
-    var updated = original.WithNamespace( new Namespace( "myorg" ) );
+    var updated = original.With( new Namespace( "myorg" ) );
 
     await Assert.That( updated.Namespace ).IsEqualTo( new Namespace( "myorg" ) );
     await Assert.That( updated.ToString() ).IsEqualTo( $"docker.io/myorg/nginx@{ValidDigest}" );
@@ -207,7 +180,7 @@ internal sealed class CanonicalImageRefTests {
   public async Task WithNamespacePreservesOtherProperties() {
     var original = new PartialImageRef( "nginx", Tag.Latest, digest: new Digest( ValidDigest ) )
       .Canonicalize( CanonicalizationMode.MaintainTag );
-    var updated = original.WithNamespace( new Namespace( "custom" ) );
+    var updated = original.With( new Namespace( "custom" ) );
 
     await Assert.That( updated.Registry ).IsEqualTo( Registry.DockerHub );
     await Assert.That( updated.Repository ).IsEqualTo( new Repository( "nginx" ) );
@@ -218,7 +191,7 @@ internal sealed class CanonicalImageRefTests {
   [Test]
   public async Task WithNamespaceDoesNotMutateOriginal() {
     var original = new PartialImageRef( "nginx", digest: new Digest( ValidDigest ) ).Canonicalize();
-    _ = original.WithNamespace( new Namespace( "myorg" ) );
+    _ = original.With( new Namespace( "myorg" ) );
 
     await Assert.That( original.Namespace ).IsEqualTo( new Namespace( "library" ) );
   }
@@ -229,24 +202,13 @@ internal sealed class CanonicalImageRefTests {
   [Test]
   public async Task DigestNeverChanges() {
     var original = new PartialImageRef( "nginx", digest: new Digest( ValidDigest ) ).Canonicalize();
-    var withTag = original.WithTag( Tag.Latest );
-    var withRegistry = original.On( Registry.GitHub );
-    var withNamespace = original.WithNamespace( new Namespace( "myorg" ) );
+    var withTag = original.With( Tag.Latest );
+    var withRegistry = original.With( Registry.GitHub );
+    var withNamespace = original.With( new Namespace( "myorg" ) );
 
     await Assert.That( withTag.Digest ).IsEqualTo( new Digest( ValidDigest ) );
     await Assert.That( withRegistry.Digest ).IsEqualTo( new Digest( ValidDigest ) );
     await Assert.That( withNamespace.Digest ).IsEqualTo( new Digest( ValidDigest ) );
-  }
-
-  [Test]
-  public async Task AllVariantsAreImmutable() {
-    var ref1 = new PartialImageRef( "nginx", digest: new Digest( ValidDigest ) ).Canonicalize();
-    var ref2 = ref1.WithTag( Tag.Latest );
-    var ref3 = ref2.On( Registry.GitHub );
-
-    await Assert.That( ref1.IsPinned ).IsTrue();
-    await Assert.That( ref2.IsPinned ).IsTrue();
-    await Assert.That( ref3.IsPinned ).IsTrue();
   }
 
   // -----------------------
@@ -313,7 +275,7 @@ internal sealed class CanonicalImageRefTests {
   [Test]
   public async Task WithTagCreatesNewInstance() {
     var original = new PartialImageRef( "nginx", digest: new Digest( ValidDigest ) ).Canonicalize();
-    var updated = original.WithTag( Tag.Latest );
+    var updated = original.With( Tag.Latest );
 
     await Assert.That( ReferenceEquals( original, updated ) ).IsFalse();
   }

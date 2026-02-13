@@ -55,36 +55,6 @@ internal sealed class QualifiedImageRefTests {
   }
 
   // -----------------------
-  // IsQualified
-  // -----------------------
-  [Test]
-  public async Task IsQualifiedAlwaysTrue() {
-    var image = new PartialImageRef( "nginx", Tag.Latest ).Qualify();
-    await Assert.That( image.IsQualified ).IsTrue();
-  }
-
-  // -----------------------
-  // IsPinned
-  // -----------------------
-  [Test]
-  public async Task IsPinnedFalseWhenOnlyTag() {
-    var image = new PartialImageRef( "nginx", Tag.Latest ).Qualify();
-    await Assert.That( image.IsPinned ).IsFalse();
-  }
-
-  [Test]
-  public async Task IsPinnedTrueWhenDigestPresent() {
-    var image = new PartialImageRef( "nginx", digest: new Digest( ValidDigest ) ).Qualify();
-    await Assert.That( image.IsPinned ).IsTrue();
-  }
-
-  [Test]
-  public async Task IsPinnedTrueWhenBothTagAndDigest() {
-    var image = new PartialImageRef( "nginx", Tag.Latest, digest: new Digest( ValidDigest ) ).Qualify();
-    await Assert.That( image.IsPinned ).IsTrue();
-  }
-
-  // -----------------------
   // ToString
   // -----------------------
   [Test]
@@ -123,7 +93,7 @@ internal sealed class QualifiedImageRefTests {
   [Test]
   public async Task WithTagReplacesTag() {
     var original = new PartialImageRef( "nginx", Tag.Latest ).Qualify();
-    var updated = original.WithTag( new Tag( "alpine" ) );
+    var updated = original.With( new Tag( "alpine" ) );
 
     await Assert.That( updated.Tag ).IsEqualTo( new Tag( "alpine" ) );
     await Assert.That( updated.ToString() ).IsEqualTo( "docker.io/library/nginx:alpine" );
@@ -132,7 +102,7 @@ internal sealed class QualifiedImageRefTests {
   [Test]
   public async Task WithTagPreservesOtherProperties() {
     var original = new PartialImageRef( Registry.GitHub, "myorg", "myapp", Tag.Latest ).Qualify();
-    var updated = original.WithTag( new Tag( "v1.0" ) );
+    var updated = original.With( new Tag( "v1.0" ) );
 
     await Assert.That( updated.Registry ).IsEqualTo( Registry.GitHub );
     await Assert.That( updated.Namespace ).IsEqualTo( new Namespace( "myorg" ) );
@@ -143,7 +113,7 @@ internal sealed class QualifiedImageRefTests {
   [Test]
   public async Task WithTagDoesNotMutateOriginal() {
     var original = new PartialImageRef( "nginx", Tag.Latest ).Qualify();
-    _ = original.WithTag( new Tag( "alpine" ) );
+    _ = original.With( new Tag( "alpine" ) );
 
     await Assert.That( original.Tag ).IsEqualTo( Tag.Latest );
   }
@@ -154,7 +124,7 @@ internal sealed class QualifiedImageRefTests {
   [Test]
   public async Task OnChangesRegistry() {
     var original = new PartialImageRef( "nginx", Tag.Latest ).Qualify();
-    var updated = original.On( Registry.GitHub, new Namespace( "myorg" ) );
+    var updated = original.With( Registry.GitHub, new Namespace( "myorg" ) );
 
     await Assert.That( updated.Registry ).IsEqualTo( Registry.GitHub );
     await Assert.That( updated.Namespace ).IsEqualTo( new Namespace( "myorg" ) );
@@ -164,7 +134,7 @@ internal sealed class QualifiedImageRefTests {
   [Test]
   public async Task OnPreservesOtherProperties() {
     var original = new PartialImageRef( "nginx", Tag.Latest ).Qualify();
-    var updated = original.On( Registry.Localhost );
+    var updated = original.With( Registry.Localhost );
 
     await Assert.That( updated.Repository ).IsEqualTo( new Repository( "nginx" ) );
     await Assert.That( updated.Tag ).IsEqualTo( Tag.Latest );
@@ -173,7 +143,7 @@ internal sealed class QualifiedImageRefTests {
   [Test]
   public async Task OnDoesNotMutateOriginal() {
     var original = new PartialImageRef( "nginx", Tag.Latest ).Qualify();
-    _ = original.On( Registry.GitHub, new Namespace( "myorg" ) );
+    _ = original.With( Registry.GitHub, new Namespace( "myorg" ) );
 
     await Assert.That( original.Registry ).IsEqualTo( Registry.DockerHub );
   }
@@ -198,7 +168,6 @@ internal sealed class QualifiedImageRefTests {
     var canonical = qualified.Canonicalize();
 
     await Assert.That( canonical.Digest ).IsEqualTo( new Digest( ValidDigest ) );
-    await Assert.That( canonical.IsQualified ).IsTrue();
   }
 
   [Test]
