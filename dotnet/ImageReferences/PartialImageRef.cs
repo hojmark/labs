@@ -188,7 +188,6 @@ public sealed partial record PartialImageRef : ImageRef {
 
   #endregion
 
-
   /// <summary>
   /// Returns a new instance with the specified tag.
   /// </summary>

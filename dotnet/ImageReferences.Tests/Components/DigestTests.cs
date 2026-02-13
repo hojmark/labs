@@ -1,4 +1,4 @@
-namespace HLabs.ImageReferences.Tests;
+namespace HLabs.ImageReferences.Tests.Components;
 
 internal sealed class DigestTests {
   private const string ValidDigest = "sha256:a3ed95caeb02ffe68cdd9fd84406680ae93d633cb16422d00e8a7c22955b46d4";

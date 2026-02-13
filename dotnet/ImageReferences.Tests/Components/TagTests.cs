@@ -1,6 +1,6 @@
 using Semver;
 
-namespace HLabs.ImageReferences.Tests;
+namespace HLabs.ImageReferences.Tests.Components;
 
 internal sealed class TagTests {
   [Test]

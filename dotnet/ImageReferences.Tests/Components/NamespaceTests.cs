@@ -1,4 +1,4 @@
-namespace HLabs.ImageReferences.Tests;
+namespace HLabs.ImageReferences.Tests.Components;
 
 internal sealed class NamespaceTests {
   [Test]
