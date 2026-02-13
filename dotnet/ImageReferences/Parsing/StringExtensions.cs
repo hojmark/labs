@@ -20,7 +20,7 @@ public static class StringExtensions {
     /// </code>
     /// </example>
     public PartialImageRef Image() => PartialImageRef.Parse( imageReference );
-/*
+
     /// <summary>
     /// Creates a qualified container image reference.
     /// </summary>
@@ -31,6 +31,6 @@ public static class StringExtensions {
     /// Creates a pinned container image reference. That is, a reference that is guaranteed to resolve to the same image (content-addressable).
     /// This is only possible if the image reference has a digest.
     /// </summary>
-    public CanonicalImageRef CanonicalImage() => PartialImageRef.Parse( imageReference ).Canonicalize();*/
+    public CanonicalImageRef CanonicalImage() => PartialImageRef.Parse( imageReference ).Canonicalize();
   }
 }
