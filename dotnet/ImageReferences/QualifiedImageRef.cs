@@ -31,42 +31,42 @@ public sealed record QualifiedImageRef : ImageRef {
   }
 
   /// <summary>
-  /// Returns a new instance with a different tag.
+  /// Returns a new instance with the specified tag.
   /// </summary>
-  /// <param name="tag">The tag to use.</param>
+  /// <param name="tag">The tag, or null to remove it.</param>
   /// <returns>A new <see cref="QualifiedImageRef"/> with the specified tag.</returns>
   public QualifiedImageRef With( Tag? tag ) =>
     new(Registry, Namespace, Repository, tag, Digest);
 
   /// <summary>
-  /// Returns a new instance with a different registry.
+  /// Returns a new instance with the specified registry.
   /// </summary>
-  /// <param name="registry">The registry to use.</param>
+  /// <param name="registry">The registry.</param>
   /// <returns>A new <see cref="QualifiedImageRef"/> with the specified registry.</returns>
   public QualifiedImageRef With( Registry registry ) =>
     new(registry, Namespace, Repository, Tag, Digest);
 
   /// <summary>
-  /// Returns a new instance with a different registry and namespace.
+  /// Returns a new instance with the specified registry and namespace.
   /// </summary>
-  /// <param name="registry">The registry to use.</param>
-  /// <param name="ns">The namespace to use.</param>
+  /// <param name="registry">The registry.</param>
+  /// <param name="ns">The namespace.</param>
   /// <returns>A new <see cref="QualifiedImageRef"/> with the specified registry and namespace.</returns>
   public QualifiedImageRef With( Registry registry, Namespace ns ) =>
     new(registry, ns, Repository, Tag, Digest);
 
   /// <summary>
-  /// Returns a new instance with a different namespace.
+  /// Returns a new instance with the specified namespace.
   /// </summary>
-  /// <param name="ns">The namespace to use.</param>
+  /// <param name="ns">The namespace, or null to remove it.</param>
   /// <returns>A new <see cref="QualifiedImageRef"/> with the specified namespace.</returns>
   public QualifiedImageRef With( Namespace? ns ) =>
     new(Registry, ns, Repository, Tag, Digest);
 
   /// <summary>
-  /// Returns a new instance with a different digest.
+  /// Returns a new instance with the specified digest.
   /// </summary>
-  /// <param name="digest">The digest to use.</param>
+  /// <param name="digest">The digest, or null to remove it.</param>
   /// <returns>A new <see cref="QualifiedImageRef"/> with the specified digest.</returns>
   public QualifiedImageRef With( Digest? digest ) =>
     new(Registry, Namespace, Repository, Tag, digest);

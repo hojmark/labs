@@ -221,43 +221,43 @@ public sealed partial record PartialImageRef : ImageRef {
   }
 
   /// <summary>
-  /// Returns a new instance with a different cosmetic tag.
+  /// Returns a new instance with the specified tag.
   /// </summary>
-  /// <param name="tag">The tag to use, or null to remove the tag.</param>
+  /// <param name="tag">The tag, or null to remove it.</param>
   /// <returns>A new <see cref="PartialImageRef"/> with the specified tag.</returns>
   public PartialImageRef With( Tag? tag ) =>
     new(Repository, tag, Registry, Namespace, Digest);
 
   /// <summary>
-  /// Returns a new instance with a different registry.
+  /// Returns a new instance with the specified registry.
   /// </summary>
-  /// <param name="registry">The registry to use, or null to remove the registry.</param>
+  /// <param name="registry">The registry, or null to remove it.</param>
   /// <returns>A new <see cref="PartialImageRef"/> with the specified registry.</returns>
   public PartialImageRef With( Registry? registry ) =>
     new(Repository, Tag, registry, Namespace, Digest);
 
   /// <summary>
-  /// Returns a new instance with a different registry.
+  /// Returns a new instance with the specified registry and namespace.
   /// </summary>
-  /// <param name="registry">The registry to use.</param>
-  /// <param name="ns">The namespace to use.</param>
+  /// <param name="registry">The registry.</param>
+  /// <param name="ns">The namespace.</param>
   /// <returns>A new <see cref="PartialImageRef"/> with the specified registry and namespace.</returns>
   public PartialImageRef With( Registry registry, Namespace ns ) =>
     new(Repository, Tag, registry, ns, Digest);
 
   /// <summary>
-  /// Returns a new instance with a different namespace.
+  /// Returns a new instance with the specified namespace.
   /// </summary>
-  /// <param name="ns">The namespace to use, or null to remove the namespace.</param>
+  /// <param name="ns">The namespace, or null to remove it.</param>
   /// <returns>A new <see cref="PartialImageRef"/> with the specified namespace.</returns>
   public PartialImageRef With( Namespace? ns ) =>
     // TODO remember registry/namespace requirement
     new(Repository, Tag, Registry, ns, Digest);
 
   /// <summary>
-  /// Returns a new instance with a different digest.
+  /// Returns a new instance with the specified digest.
   /// </summary>
-  /// <param name="digest">The digest to use, or null to remove the digest.</param>
+  /// <param name="digest">The digest, or null to remove it.</param>
   /// <returns>A new <see cref="PartialImageRef"/> with the specified digest.</returns>
   public PartialImageRef With( Digest? digest ) =>
     new(Repository, Tag, Registry, Namespace, digest);
