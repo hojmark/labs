@@ -15,6 +15,7 @@ sealed partial class NukeBuild {
 
   Target Build => _ => _
     .DependsOn( Restore )
+    .Triggers( CheckWarnings )
     .Executes( () => {
         //using var _ = new OperationTimer( nameof(Build) );
 
@@ -24,7 +25,7 @@ sealed partial class NukeBuild {
           .SetProjectFile( Solution )
           .SetConfiguration( Configuration )
           //TODO.SetVersionProperties( version )
-          //.SetBinaryLog( BinaryBuildLogName )
+          .SetBinaryLog( BinaryBuildLogName )
           .EnableNoLogo()
           .EnableNoRestore()
         );

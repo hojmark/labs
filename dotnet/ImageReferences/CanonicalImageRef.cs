@@ -1,0 +1,94 @@
+namespace HLabs.ImageReferences;
+
+/// <summary>
+/// Content-addressable (immutable) image reference.
+/// Guaranteed to resolve to the same image content due to digest pinning.
+/// </summary>
+public sealed record CanonicalImageRef : ImageRef {
+  /// <summary>
+  /// Gets the registry.
+  /// </summary>
+  public new Registry Registry {
+    get;
+  }
+
+  /// <summary>
+  /// Gets the repository.
+  /// </summary>
+  public new Repository Repository {
+    get;
+  }
+
+  /// <summary>
+  /// Gets the digest.
+  /// </summary>
+  public new Digest Digest {
+    get;
+  }
+
+  internal CanonicalImageRef(
+    Registry registry,
+    Namespace? ns,
+    Repository repository,
+    Digest digest,
+    Tag? tag = null
+  ) {
+    Registry = registry ?? throw new ArgumentNullException( nameof(registry) );
+    Namespace = ns ?? ( Registry.NamespaceRequired ? throw new ArgumentNullException( nameof(ns) ) : null );
+    Repository = repository ?? throw new ArgumentNullException( nameof(repository) );
+    Digest = digest ?? throw new ArgumentNullException( nameof(digest) );
+    Tag = tag; // Cosmetic
+  }
+
+  /// <summary>
+  /// Returns a new instance with the specified tag.
+  /// </summary>
+  /// <param name="tag">The tag.</param>
+  /// <returns>A new <see cref="CanonicalImageRef"/> with the specified tag.</returns>
+  public CanonicalImageRef With( Tag? tag ) =>
+    new(Registry, Namespace, Repository, Digest, tag);
+
+  /// <summary>
+  /// Returns a new instance with the specified digest.
+  /// </summary>
+  /// <param name="digest">The digest.</param>
+  /// <returns>A new <see cref="CanonicalImageRef"/> with the specified digest.</returns>
+  public CanonicalImageRef With( Digest digest ) =>
+    new(Registry, Namespace, Repository, digest, Tag);
+
+  /// <summary>
+  /// Returns a new instance with the specified registry.
+  /// </summary>
+  /// <param name="registry">The registry.</param>
+  /// <returns>A new <see cref="CanonicalImageRef"/> with the specified registry.</returns>
+  public CanonicalImageRef With( Registry registry ) =>
+    new(registry, Namespace, Repository, Digest, Tag);
+
+  /// <summary>
+  /// Returns a new instance with the specified registry and namespace.
+  /// </summary>
+  /// <param name="registry">The registry.</param>
+  /// <param name="ns">The namespace.</param>
+  /// <returns>A new <see cref="CanonicalImageRef"/> with the specified registry and namespace.</returns>
+  public CanonicalImageRef With( Registry registry, Namespace ns ) =>
+    new(registry, ns, Repository, Digest, Tag);
+
+  /// <summary>
+  /// Returns a new instance with the specified namespace.
+  /// </summary>
+  /// <param name="ns">The namespace.</param>
+  /// <returns>A new <see cref="CanonicalImageRef"/> with the specified namespace.</returns>
+  public CanonicalImageRef With( Namespace ns ) =>
+    new(Registry, ns, Repository, Digest, Tag);
+
+  /// <summary>
+  /// Returns the string representation of this canonical image reference.
+  /// </summary>
+  /// <returns>A string representation of this canonical image reference.</returns>
+  public override string ToString() {
+    var nsPart = Namespace is not null ? $"{Namespace}/" : string.Empty;
+    return Tag is not null
+      ? $"{Registry}/{nsPart}{Repository}:{Tag}@{Digest}"
+      : $"{Registry}/{nsPart}{Repository}@{Digest}";
+  }
+}

@@ -1,4 +1,5 @@
-using System.IO;
+using System.IO.Compression;
+using System.Xml.Linq;
 using Nuke.Common;
 using Nuke.Common.IO;
 using Nuke.Common.Tools.DotNet;
@@ -35,6 +36,7 @@ internal partial class NukeBuild {
         Log.Information( "Publishing to local registry {Path}", Paths.NuGetLocalRegistry );
 
         foreach ( var nupkg in Directory.GetFiles( Paths.NuGetArtifacts, "*.nupkg" ) ) {
+          ClearNuGetCacheFor( nupkg );
           var fileName = Path.GetFileName( nupkg );
           var path = Path.Combine( Paths.NuGetLocalRegistry, fileName );
           File.Copy( nupkg, path, overwrite: true );
@@ -42,4 +44,67 @@ internal partial class NukeBuild {
         }
       }
     );
+
+  void ClearNuGetCacheFor( string nupkgPath ) {
+    var (packageId, version) = ReadPackageIdentity( nupkgPath );
+
+    if ( packageId is null || version is null )
+      return;
+
+    var globalPackages = Path.Combine(
+      Environment.GetFolderPath( Environment.SpecialFolder.UserProfile ),
+      ".nuget",
+      "packages" );
+
+    var cachedPath = Path.Combine(
+      globalPackages,
+      packageId.ToLowerInvariant(),
+      version );
+
+    if ( !Directory.Exists( cachedPath ) )
+      return;
+
+    Log.Information(
+      "Clearing NuGet cache for {Id} {Version} at {Path}",
+      packageId,
+      version,
+      cachedPath );
+
+    Directory.Delete( cachedPath, recursive: true );
+  }
+
+  private (string? Id, string? Version) ReadPackageIdentity( string nupkgPath ) {
+    using var archive = ZipFile.OpenRead( nupkgPath );
+
+    var nuspecEntry = archive.Entries
+      .FirstOrDefault( e => e.FullName.EndsWith( ".nuspec", StringComparison.OrdinalIgnoreCase ) );
+
+    if ( nuspecEntry is null ) {
+      Log.Warning( "No .nuspec found in {Nupkg}", nupkgPath );
+      return ( null, null );
+    }
+
+    using var stream = nuspecEntry.Open();
+    var document = XDocument.Load( stream );
+
+    var metadata = document
+      .Descendants()
+      .FirstOrDefault( e => e.Name.LocalName == "metadata" );
+
+    var id = metadata?
+      .Elements()
+      .FirstOrDefault( e => e.Name.LocalName == "id" )
+      ?.Value;
+
+    var version = metadata?
+      .Elements()
+      .FirstOrDefault( e => e.Name.LocalName == "version" )
+      ?.Value;
+
+    if ( id is null || version is null ) {
+      Log.Warning( "Could not read id/version from nuspec in {Nupkg}", nupkgPath );
+    }
+
+    return ( id, version );
+  }
 }

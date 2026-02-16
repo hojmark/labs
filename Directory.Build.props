@@ -1,6 +1,6 @@
 <Project>
   <PropertyGroup>
-    <PackageVersion>1.0.0-preview.2.local</PackageVersion>
+    <PackageVersion>0.0.0-local</PackageVersion>
     <Authors>hojmark</Authors>
     <Copyright>Copyright (c) hojmark</Copyright>
     <PackageProjectUrl>https://github.com/hojmark/labs</PackageProjectUrl>
@@ -15,11 +15,12 @@
     <Nullable>enable</Nullable>
     <IsPackable>false</IsPackable>
     <AnalysisMode>All</AnalysisMode>
-    <TreatWarningsAsErrors Condition="'$(Configuration)'=='Release'">true</TreatWarningsAsErrors>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="StyleCop.Analyzers" PrivateAssets="all" />
     <PackageReference Include="SonarAnalyzer.CSharp" PrivateAssets="all" />
+    <PackageReference Include="Nullable.Extended.Analyzer" PrivateAssets="all" />
   </ItemGroup>
 </Project>

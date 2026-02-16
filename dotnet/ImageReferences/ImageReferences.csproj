@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Description>Describe, validate, and manipulate container image references</Description>
-    <PackageTags>Docker container containers</PackageTags>
+    <Description>Strongly-typed container image references. Build, parse and manipulate.</Description>
+    <PackageTags>Docker Podman container containers image</PackageTags>
     <IsPackable>true</IsPackable>
   </PropertyGroup>
 
