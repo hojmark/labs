@@ -70,6 +70,8 @@ public sealed partial record Registry {
 
   /// <inheritdoc />
   public override int GetHashCode() {
+ #pragma warning disable CA1307
     return Host.GetHashCode();
+#pragma warning restore CA1307
   }
 }

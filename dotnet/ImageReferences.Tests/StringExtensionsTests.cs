@@ -54,12 +54,15 @@ internal sealed class StringExtensionsTests {
 
   [Test]
   public void ImageExtensionThrowsOnInvalidFormat() {
+#pragma warning disable SA1122
     Assert.Throws<Exception>( () => "".Image() );
+#pragma warning restore SA1122
   }
 
   [Test]
   public void ImageExtensionThrowsOnNullString() {
     string? nullString = null;
+    // ! Intentionally providing null value
     Assert.Throws<ArgumentNullException>( () => nullString!.Image() );
   }
 
@@ -97,7 +100,9 @@ internal sealed class StringExtensionsTests {
 
   [Test]
   public void QualifiedImageExtensionThrowsOnInvalid() {
+#pragma warning disable SA1122
     Assert.Throws<Exception>( () => "".QualifiedImage() );
+#pragma warning restore SA1122
   }
 
   // -----------------------
@@ -168,5 +173,3 @@ internal sealed class StringExtensionsTests {
     await Assert.That( canonical.ToString() ).IsEqualTo( input );
   }
 }
-
-

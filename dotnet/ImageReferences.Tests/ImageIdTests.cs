@@ -77,7 +77,8 @@ internal sealed class ImageIdTests {
 
   [Test]
   public void Sha512AlgorithmThrows() {
-    var sha512Hash = "b109f3bbbc244eb82441917ed06d618b9008dd09b3befd1b5e07394c706a8bb980b1d7785e5976ec049b46df5f1326af5a2ea6d103fd07c95385ffab0cacbc86";
+    var sha512Hash =
+      "b109f3bbbc244eb82441917ed06d618b9008dd09b3befd1b5e07394c706a8bb980b1d7785e5976ec049b46df5f1326af5a2ea6d103fd07c95385ffab0cacbc86";
     Assert.Throws<ArgumentException>( () => new ImageId( $"sha512:{sha512Hash}" ) );
   }
 
@@ -191,5 +192,3 @@ internal sealed class ImageIdTests {
     await Assert.That( a.GetHashCode() ).IsNotEqualTo( b.GetHashCode() );
   }
 }
-
-
