@@ -1,4 +1,4 @@
-# HLabs.ImageReferences
+# `HLabs.ImageReferences`
 
 Strongly-typed container image references for .NET.
 
@@ -9,7 +9,7 @@ dotnet add package HLabs.ImageReferences
 ## Getting Started
 
 ```csharp
-var partial = "nginx".Image(); // -> nginx
+var partial = "nginx".Image(); // nginx
 
 var qualified = partial.Qualified(); // docker.io/library/nginx:latest
 
@@ -29,18 +29,14 @@ Tag        tag  = image.Tag; // 3.1.0
 
 ### Modifying references
 
-You are always guarenteed to have a structurally valid reference when modifying:
-
 ```csharp
-var dev = new ImageReference( "myapp", Tag.Latest, Registry.Localhost ); // → localhost:5000/myapp:latest
-var prod = dev.With( Registry.DockerHub, "myorg" ); // → docker.io/myorg/myapp:latest
-var pinned = prod.With( new SemVersion(2, 1, 0)); // → docker.io/myorg/myapp:2.1.0
-var withDigest = pinned.With( "sha256:a3ed95caeb02..." ); // → docker.io/myorg/myapp@sha256:a3ed95caeb02...
+var dev = new ImageReference( "myapp", Tag.Latest, Registry.Localhost ); // localhost:5000/myapp:latest
+var prod = dev.With( Registry.DockerHub, "myorg" ); // docker.io/myorg/myapp:latest
+var pinned = prod.With( new SemVersion(2, 1, 0)); // docker.io/myorg/myapp:2.1.0
+var withDigest = pinned.With( "sha256:a3ed95caeb02..." ); // docker.io/myorg/myapp@sha256:a3ed95caeb02...
 ```
 
 ### Built-in registries and tags
-
-Common registries and tags are provided as static members:
 
 ```csharp
 Registry.DockerHub // docker.io
@@ -76,6 +72,6 @@ static class MyExtensions
 Then use them naturally:
 
 ```csharp
-var image = "myapp".Image( Tag.Dev, Registry.Localhost); // → localhost:5000/myapp:dev
-var alpha = image.With( Registry.Internal, Tag.Alpha(3) ); // → 1234.dkr.ecr.eu-west-1.amazonaws.com/myapp:alpha-3
+var image = "myapp".Image( Tag.Dev, Registry.Localhost); // localhost:5000/myapp:dev
+var alpha = image.With( Registry.Internal, Tag.Alpha(3) ); // 1234.dkr.ecr.eu-west-1.amazonaws.com/myapp:alpha-3
 ```

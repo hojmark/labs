@@ -107,10 +107,6 @@ public sealed partial record PartialImageRef : ImageRef {
     : this( repository, null, registry, null, null ) {
   }
 
-  // Overload clashes with Namespace + Repository + Tag when using string literals (implicit conversions), so not included for now.
-  // The more common use case is probably the other one.
-  // TODO decide
-
   /// <summary>
   /// Initializes a new instance of the <see cref="PartialImageRef"/> class.
   /// </summary>
@@ -219,7 +215,6 @@ public sealed partial record PartialImageRef : ImageRef {
   /// <param name="ns">The namespace.</param>
   /// <returns>A new <see cref="PartialImageRef"/> with the specified namespace.</returns>
   public PartialImageRef With( Namespace? ns ) =>
-    // TODO remember registry/namespace requirement
     new(Repository, Tag, Registry, ns, Digest);
 
   /// <summary>
