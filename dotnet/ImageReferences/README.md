@@ -1,4 +1,4 @@
-# `HLabs.ImageReferences`
+# `HLabs.ImageReferences` 🐋
 
 Strongly-typed container image references for .NET.
 
