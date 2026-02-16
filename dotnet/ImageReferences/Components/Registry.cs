@@ -62,4 +62,14 @@ public sealed partial record Registry {
   /// </summary>
   /// <returns>The registry host in lowercase.</returns>
   public override string ToString() => Host;
+
+  /// <inheritdoc />
+  public bool Equals( Registry? other ) {
+    return other is not null && Host == other.Host;
+  }
+
+  /// <inheritdoc />
+  public override int GetHashCode() {
+    return Host.GetHashCode();
+  }
 }
