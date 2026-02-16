@@ -3,23 +3,14 @@ using System.Text.RegularExpressions;
 namespace HLabs.ImageReferences;
 
 /// <summary>
-/// Represents a digest for a container image e.g., <c>sha256:a3ed95caeb02ffe68cdd9fd84406680ae93d633cb16422d00e8a7c22955b46d4</c>.
-/// <p>
-/// Digests are immutable identifiers that uniquely identify image content i.e., they are content-addressable.
-/// </p>
+/// Represents a content-addressable digest for a container image (e.g., <c>sha256:a3ed95caeb02ffe68cdd9fd84406680ae93d633cb16422d00e8a7c22955b46d4</c>).
+/// Digests are immutable identifiers that uniquely identify image content.
 /// </summary>
 /// <example>
-/// Using implicit string conversion:
-/// <code>
-/// Digest digest = "sha256:abc123";
-/// </code>
-/// Using constructor
 /// <code>
 /// var digest = new Digest("sha256:abc123");
-/// </code>
-/// Algorithm prefix is optional:
-/// <code>
-/// Digest digest1 = "abc123";
+/// Digest digest = "sha256:abc123";  // Implicit conversion from string
+/// Digest digest = "abc123";         // Algorithm prefix optional
 /// </code>
 /// </example>
 public sealed record Digest {
@@ -36,7 +27,7 @@ public sealed record Digest {
   /// Initializes a new instance of the <see cref="Digest"/> class.
   /// </summary>
   /// <param name="value">The digest value. Can be in format <c>sha256:abc123</c> or just <c>abc123</c>.</param>
-  /// <exception cref="ArgumentException">Thrown when <paramref name="value"/> is not a valid digest.</exception>
+  /// <exception cref="ArgumentException">Thrown when <paramref name="value"/> is an invalid digest.</exception>
   public Digest( string value ) {
     if ( string.IsNullOrWhiteSpace( value ) ) {
       throw new ArgumentException( "Digest cannot be null or empty", nameof(value) );
@@ -89,7 +80,7 @@ public sealed record Digest {
   /// </summary>
   /// <param name="value">The digest value.</param>
   /// <returns>A new <see cref="Digest"/> instance.</returns>
-  /// <exception cref="ArgumentException">Thrown when <paramref name="value"/> is not a valid digest.</exception>
+  /// <exception cref="ArgumentException">Thrown when <paramref name="value"/> is an invalid digest.</exception>
   public static Digest FromString( string value ) {
     return new(value);
   }
@@ -97,6 +88,6 @@ public sealed record Digest {
   /// <summary>
   /// Returns the string representation of this digest.
   /// </summary>
-  /// <returns>The digest in format <c>sha256:abc123</c>.</returns>
+  /// <returns>The digest in format <c>sha256:hash</c>.</returns>
   public override string ToString() => Value;
 }

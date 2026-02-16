@@ -82,8 +82,7 @@ public sealed record CanonicalImageRef : ImageRef {
     new(Registry, ns, Repository, Digest, Tag);
 
   /// <summary>
-  /// Returns a string representation of this canonical image reference,
-  /// including the registry, namespace (if present), repository, digest, and tag (if present).
+  /// Returns the string representation of this canonical image reference.
   /// </summary>
   /// <returns>A string representation of this canonical image reference.</returns>
   public override string ToString() {

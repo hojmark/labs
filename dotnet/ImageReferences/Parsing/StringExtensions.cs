@@ -22,15 +22,20 @@ public static class StringExtensions {
     public PartialImageRef Image() => PartialImageRef.Parse( imageReference );
 
     /// <summary>
-    /// Creates a qualified container image reference.
+    /// Creates a qualified container image reference from a string.
     /// </summary>
-    /// <exception cref="InvalidOperationException">Thrown if the image reference is not in a canonical form.</exception>
+    /// <returns>A <see cref="QualifiedImageRef"/>.</returns>
+    /// <exception cref="FormatException">Thrown when the image reference string is invalid.</exception>
+    /// <exception cref="InvalidOperationException">Thrown if the image reference cannot be qualified.</exception>
     public QualifiedImageRef QualifiedImage() => PartialImageRef.Parse( imageReference ).Qualify();
 
     /// <summary>
-    /// Creates a pinned container image reference. That is, a reference that is guaranteed to resolve to the same image (content-addressable).
+    /// Creates a canonical container image reference from a string.
     /// This is only possible if the image reference has a digest.
     /// </summary>
+    /// <returns>A <see cref="CanonicalImageRef"/>.</returns>
+    /// <exception cref="FormatException">Thrown when the image reference string is invalid.</exception>
+    /// <exception cref="InvalidOperationException">Thrown if the image reference cannot be canonicalized.</exception>
     public CanonicalImageRef CanonicalImage() => PartialImageRef.Parse( imageReference ).Canonicalize();
   }
 }

@@ -7,11 +7,11 @@ namespace HLabs.ImageReferences;
 /// Namespaces are used to organize repositories within a registry.
 /// </summary>
 /// <example>
-/// Examples of valid namespaces:
 /// <code>
 /// var ns = new Namespace("library");    // DockerHub official images
 /// var ns = new Namespace("myorg");      // Organization namespace
 /// var ns = new Namespace("username");   // User namespace
+/// Namespace ns = "myorg";               // Implicit conversion from string
 /// </code>
 /// </example>
 [SuppressMessage(
@@ -27,8 +27,8 @@ public sealed partial record Namespace {
   /// <summary>
   /// Initializes a new instance of the <see cref="Namespace"/> class.
   /// </summary>
-  /// <param name="name">The namespace name. Cannot be null, empty, or contain forward slashes.</param>
-  /// <exception cref="ArgumentException">Thrown when name is null, empty, whitespace-only, contains leading/trailing whitespace, or contains a forward slash.</exception>
+  /// <param name="name">The namespace name.</param>
+  /// <exception cref="ArgumentException">Thrown when <paramref name="name"/> is an invalid namespace.</exception>
   public Namespace( string name ) {
     if ( string.IsNullOrWhiteSpace( name ) ) {
       throw new ArgumentException( "Namespace cannot be null or empty", nameof(name) );

@@ -1,10 +1,7 @@
 namespace HLabs.ImageReferences;
 
-// -----------------------------
-// Qualified image reference: fully qualified (registry, namespace, repository, tag or digest)
-// -----------------------------
 /// <summary>
-/// Qualified image reference that can address a specific image.
+/// Fully qualified image reference that can address a specific image.
 /// The underlying image may change over time (e.g., tag can be moved).
 /// Requires registry and repository, with namespace depending on registry requirements.
 /// Must have either a tag or digest.
@@ -40,7 +37,7 @@ public sealed record QualifiedImageRef : ImageRef {
   /// <summary>
   /// Returns a new instance with the specified tag.
   /// </summary>
-  /// <param name="tag">The tag, or null to remove it.</param>
+  /// <param name="tag">The tag.</param>
   /// <returns>A new <see cref="QualifiedImageRef"/> with the specified tag.</returns>
   public QualifiedImageRef With( Tag? tag ) =>
     new(Registry, Namespace, Repository, tag, Digest);
@@ -65,7 +62,7 @@ public sealed record QualifiedImageRef : ImageRef {
   /// <summary>
   /// Returns a new instance with the specified namespace.
   /// </summary>
-  /// <param name="ns">The namespace, or null to remove it.</param>
+  /// <param name="ns">The namespace.</param>
   /// <returns>A new <see cref="QualifiedImageRef"/> with the specified namespace.</returns>
   public QualifiedImageRef With( Namespace? ns ) =>
     new(Registry, ns, Repository, Tag, Digest);
@@ -73,17 +70,17 @@ public sealed record QualifiedImageRef : ImageRef {
   /// <summary>
   /// Returns a new instance with the specified digest.
   /// </summary>
-  /// <param name="digest">The digest, or null to remove it.</param>
+  /// <param name="digest">The digest.</param>
   /// <returns>A new <see cref="QualifiedImageRef"/> with the specified digest.</returns>
   public QualifiedImageRef With( Digest? digest ) =>
     new(Registry, Namespace, Repository, Tag, digest);
 
   /// <summary>
-  /// Creates a digest-pinned image reference.
+  /// Converts this reference to a canonical (digest-pinned) form with a specific digest.
   /// </summary>
   /// <param name="digest">The digest to pin the reference with.</param>
   /// <param name="mode">Specifies whether to maintain or exclude the tag in the canonical reference.</param>
-  /// <returns>A canonical (immutable) image reference.</returns>
+  /// <returns>A canonical image reference.</returns>
   /// <exception cref="ArgumentNullException">Thrown when digest is null.</exception>
   public CanonicalImageRef Canonicalize( Digest digest, CanonicalizationMode mode = CanonicalizationMode.ExcludeTag ) {
     ArgumentNullException.ThrowIfNull( digest );
@@ -93,10 +90,10 @@ public sealed record QualifiedImageRef : ImageRef {
   }
 
   /// <summary>
-  /// Creates a digest-pinned image reference using the current digest.
+  /// Converts this reference to a canonical (digest-pinned) form using the current digest.
   /// </summary>
   /// <param name="mode">Specifies whether to maintain or exclude the tag in the canonical reference.</param>
-  /// <returns>A canonical (immutable) image reference.</returns>
+  /// <returns>A canonical image reference.</returns>
   /// <exception cref="InvalidOperationException">Thrown when digest is not present.</exception>
   public CanonicalImageRef Canonicalize( CanonicalizationMode mode = CanonicalizationMode.ExcludeTag ) {
     if ( Digest is null ) {
@@ -109,7 +106,7 @@ public sealed record QualifiedImageRef : ImageRef {
   }
 
   /// <summary>
-  /// Returns a string representation of this qualified image reference.
+  /// Returns the string representation of this qualified image reference.
   /// </summary>
   /// <returns>A string representation of this qualified image reference.</returns>
   public override string ToString() {

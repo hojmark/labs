@@ -1,7 +1,8 @@
 namespace HLabs.ImageReferences;
 
 /// <summary>
-/// Base class for container image references, providing common properties.
+/// Base class for container image references.
+/// Provides common properties for registry, namespace, repository, tag, and digest.
 /// </summary>
 public abstract record ImageRef {
   /// <summary>

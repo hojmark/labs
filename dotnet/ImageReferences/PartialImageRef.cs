@@ -3,7 +3,7 @@ namespace HLabs.ImageReferences;
 // TODO support platform
 // TODO add no-arg Canonicalize?
 /// <summary>
-/// Partial image reference.
+/// Partial image reference that may have some components unspecified.
 /// <list type="bullet">
 /// <item>
 /// <description>Use <see cref="Qualify"/> to convert to a fully qualified reference.</description>
@@ -191,7 +191,7 @@ public sealed partial record PartialImageRef : ImageRef {
   /// <summary>
   /// Returns a new instance with the specified tag.
   /// </summary>
-  /// <param name="tag">The tag, or null to remove it.</param>
+  /// <param name="tag">The tag.</param>
   /// <returns>A new <see cref="PartialImageRef"/> with the specified tag.</returns>
   public PartialImageRef With( Tag? tag ) =>
     new(Repository, tag, Registry, Namespace, Digest);
@@ -199,7 +199,7 @@ public sealed partial record PartialImageRef : ImageRef {
   /// <summary>
   /// Returns a new instance with the specified registry.
   /// </summary>
-  /// <param name="registry">The registry, or null to remove it.</param>
+  /// <param name="registry">The registry.</param>
   /// <returns>A new <see cref="PartialImageRef"/> with the specified registry.</returns>
   public PartialImageRef With( Registry? registry ) =>
     new(Repository, Tag, registry, Namespace, Digest);
@@ -216,7 +216,7 @@ public sealed partial record PartialImageRef : ImageRef {
   /// <summary>
   /// Returns a new instance with the specified namespace.
   /// </summary>
-  /// <param name="ns">The namespace, or null to remove it.</param>
+  /// <param name="ns">The namespace.</param>
   /// <returns>A new <see cref="PartialImageRef"/> with the specified namespace.</returns>
   public PartialImageRef With( Namespace? ns ) =>
     // TODO remember registry/namespace requirement
@@ -225,7 +225,7 @@ public sealed partial record PartialImageRef : ImageRef {
   /// <summary>
   /// Returns a new instance with the specified digest.
   /// </summary>
-  /// <param name="digest">The digest, or null to remove it.</param>
+  /// <param name="digest">The digest.</param>
   /// <returns>A new <see cref="PartialImageRef"/> with the specified digest.</returns>
   public PartialImageRef With( Digest? digest ) =>
     new(Repository, Tag, Registry, Namespace, digest);
@@ -233,32 +233,32 @@ public sealed partial record PartialImageRef : ImageRef {
   /// <summary>
   /// Tries to convert this partial reference to a qualified reference by applying default conventions.
   /// </summary>
-  /// <param name="canonical">When this method returns, contains the qualified reference if qualification succeeded, or null if it failed.</param>
+  /// <param name="qualified">When this method returns, contains the qualified reference if qualification succeeded, or null if it failed.</param>
   /// <param name="reason">When this method returns, contains an error message if qualification failed, or null if it succeeded.</param>
   /// <returns>true if qualification succeeded; otherwise, false.</returns>
-  public bool TryQualify( out QualifiedImageRef? canonical, out string? reason ) {
+  public bool TryQualify( out QualifiedImageRef? qualified, out string? reason ) {
     try {
-      canonical = Qualify();
+      qualified = Qualify();
       reason = null;
       return true;
     }
 #pragma warning disable CA1031
     catch ( Exception ex ) {
 #pragma warning restore CA1031
-      canonical = null;
+      qualified = null;
       reason = ex.Message;
       return false;
     }
   }
 
   /// <summary>
-  /// Converts this reference to a canonical form.
-  /// Attempts to fill in defaults for missing registry/namespace based on common conventions (e.g. Docker Hub defaults).
+  /// Converts this reference to a qualified form by applying default conventions.
+  /// Fills in defaults for missing registry/namespace based on common conventions (e.g., Docker Hub defaults).
   /// Either a tag or digest must be present.
   /// </summary>
-  /// <param name="mode">The behavior when the reference is not in a canonical form.</param>
-  /// <exception cref="InvalidOperationException">Throws InvalidOperationException if the reference is not in a qualified form.</exception>
-  /// <returns>A canonical image reference.</returns>
+  /// <param name="mode">The qualification mode to use.</param>
+  /// <returns>A qualified image reference.</returns>
+  /// <exception cref="InvalidOperationException">Thrown if repository is missing or if neither tag nor digest is present.</exception>
   public QualifiedImageRef Qualify( QualificationMode mode = QualificationMode.DefaultFilling ) {
     // Defaults
     var registry = Registry ?? Registry.DockerHub;
@@ -274,10 +274,10 @@ public sealed partial record PartialImageRef : ImageRef {
   }
 
   /// <summary>
-  /// Canonicalizes the image reference using the current digest.
+  /// Converts this reference to a canonical (digest-pinned) form using the current digest.
   /// </summary>
-  /// <param name="canonicalizationMode">Whether to maintain or exclude the tag.</param>
-  /// <param name="qualificationMode">How to handle missing components when qualifying.</param>
+  /// <param name="canonicalizationMode">Specifies whether to maintain or exclude the tag in the canonical reference.</param>
+  /// <param name="qualificationMode">Specifies how to handle missing components when qualifying.</param>
   /// <returns>A canonical image reference.</returns>
   /// <exception cref="InvalidOperationException">Thrown when digest is not present.</exception>
   public CanonicalImageRef Canonicalize(
@@ -288,11 +288,11 @@ public sealed partial record PartialImageRef : ImageRef {
   }
 
   /// <summary>
-  /// Canonicalizes the image reference with a specific digest.
+  /// Converts this reference to a canonical (digest-pinned) form with a specific digest.
   /// </summary>
   /// <param name="digest">The digest to use.</param>
-  /// <param name="canonicalizationMode">Whether to maintain or exclude the tag.</param>
-  /// <param name="qualificationMode">How to handle missing components when qualifying.</param>
+  /// <param name="canonicalizationMode">Specifies whether to maintain or exclude the tag in the canonical reference.</param>
+  /// <param name="qualificationMode">Specifies how to handle missing components when qualifying.</param>
   /// <returns>A canonical image reference.</returns>
   public CanonicalImageRef Canonicalize(
     Digest digest,
@@ -303,14 +303,15 @@ public sealed partial record PartialImageRef : ImageRef {
   }
 
   /// <summary>
-  /// Returns a string representation of this image reference.
+  /// Returns the string representation of this partial image reference.
   /// </summary>
-  /// <returns>A string representation of this image reference.</returns>
+  /// <returns>A string representation of this partial image reference.</returns>
   public override string ToString() {
     var reg = Registry is null ? string.Empty : $"{Registry}/";
     var ns = Namespace is null ? string.Empty : $"{Namespace}/";
+    var repo = Repository is null ? string.Empty : $"{Repository}";
     var tag = Tag is null ? string.Empty : $":{Tag}";
     var digest = Digest is null ? string.Empty : $"@{Digest}";
-    return $"{reg}{ns}{Repository}{tag}{digest}";
+    return $"{reg}{ns}{repo}{tag}{digest}";
   }
 }
