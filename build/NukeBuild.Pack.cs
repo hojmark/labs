@@ -73,39 +73,38 @@ internal partial class NukeBuild {
     Directory.Delete( cachedPath, recursive: true );
   }
 
-private (string? Id, string? Version) ReadPackageIdentity( string nupkgPath ) {
-  using var archive = ZipFile.OpenRead( nupkgPath );
+  private (string? Id, string? Version) ReadPackageIdentity( string nupkgPath ) {
+    using var archive = ZipFile.OpenRead( nupkgPath );
 
-  var nuspecEntry = archive.Entries
-    .FirstOrDefault( e => e.FullName.EndsWith( ".nuspec", StringComparison.OrdinalIgnoreCase ) );
+    var nuspecEntry = archive.Entries
+      .FirstOrDefault( e => e.FullName.EndsWith( ".nuspec", StringComparison.OrdinalIgnoreCase ) );
 
-  if ( nuspecEntry is null ) {
-    Log.Warning( "No .nuspec found in {Nupkg}", nupkgPath );
-    return ( null, null );
+    if ( nuspecEntry is null ) {
+      Log.Warning( "No .nuspec found in {Nupkg}", nupkgPath );
+      return ( null, null );
+    }
+
+    using var stream = nuspecEntry.Open();
+    var document = XDocument.Load( stream );
+
+    var metadata = document
+      .Descendants()
+      .FirstOrDefault( e => e.Name.LocalName == "metadata" );
+
+    var id = metadata?
+      .Elements()
+      .FirstOrDefault( e => e.Name.LocalName == "id" )
+      ?.Value;
+
+    var version = metadata?
+      .Elements()
+      .FirstOrDefault( e => e.Name.LocalName == "version" )
+      ?.Value;
+
+    if ( id is null || version is null ) {
+      Log.Warning( "Could not read id/version from nuspec in {Nupkg}", nupkgPath );
+    }
+
+    return ( id, version );
   }
-
-  using var stream = nuspecEntry.Open();
-  var document = XDocument.Load( stream );
-
-  // NuSpec uses namespaces — ignore them safely
-  var metadata = document
-    .Descendants()
-    .FirstOrDefault( e => e.Name.LocalName == "metadata" );
-
-  var id = metadata?
-    .Elements()
-    .FirstOrDefault( e => e.Name.LocalName == "id" )
-    ?.Value;
-
-  var version = metadata?
-    .Elements()
-    .FirstOrDefault( e => e.Name.LocalName == "version" )
-    ?.Value;
-
-  if ( id is null || version is null ) {
-    Log.Warning( "Could not read id/version from nuspec in {Nupkg}", nupkgPath );
-  }
-
-  return ( id, version );
-}
 }
