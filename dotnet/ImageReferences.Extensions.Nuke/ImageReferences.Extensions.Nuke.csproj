@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Description>Describe, validate, and manipulate container image references</Description>
+    <Description>NUKE extensions for HLabs.ImageReferences</Description>
     <PackageTags>NUKE Docker container containers</PackageTags>
     <IsPackable>true</IsPackable>
   </PropertyGroup>

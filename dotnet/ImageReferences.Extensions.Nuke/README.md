@@ -1,3 +1,3 @@
-# HLabs.Containers.ImageReferences.Extensions.Nuke
+# `HLabs.ImageReferences.Extensions.Nuke`
 
-This repository contains NUKE extensions for HLabs.Containers.ImageReferences.
+NUKE extensions for [`HLabs.ImageReferences`](https://www.nuget.org/packages/HLabs.ImageReferences/)
