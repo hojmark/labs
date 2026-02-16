@@ -5,17 +5,17 @@
     </Project>
   </Folder>
   <Folder Name="/Build/Workflows/">
-    <File Path=".github\workflows\ci.yaml" />
-    <File Path=".github\workflows\codeql.yml" />
-    <File Path=".github\workflows\prerelease.yaml" />
-    <File Path=".github\workflows\release.yaml" />
+    <File Path=".github/workflows/ci.yaml" />
+    <File Path=".github/workflows/codeql.yml" />
+    <File Path=".github/workflows/prerelease.yaml" />
+    <File Path=".github/workflows/release.yaml" />
   </Folder>
   <Folder Name="/Common/">
     <File Path=".editorconfig" />
     <File Path="Directory.Build.props" />
     <File Path="Directory.Packages.props" />
   </Folder>
-  <Project Path="dotnet\ImageReferences.Extensions.Nuke\ImageReferences.Extensions.Nuke.csproj" />
-  <Project Path="dotnet\ImageReferences.Tests\ImageReferences.Tests.csproj" />
-  <Project Path="dotnet\ImageReferences\ImageReferences.csproj" />
+  <Project Path="dotnet/ImageReferences.Extensions.Nuke/ImageReferences.Extensions.Nuke.csproj" />
+  <Project Path="dotnet/ImageReferences.Tests/ImageReferences.Tests.csproj" />
+  <Project Path="dotnet/ImageReferences/ImageReferences.csproj" />
 </Solution>
