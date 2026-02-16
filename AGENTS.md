@@ -2,8 +2,8 @@
 
 ## Project structure
 
-- `dotnet/Containers.ImageReferences/` - Build, parse, and manipulate container image references
-- `dotnet/Containers.ImageReferences.Extensions.Nuke/` - NUKE build extensions
+- `dotnet/ImageReferences/` - Strongly-typed container image references for .NET.
+- `dotnet/ImageReferences.Extensions.Nuke/` - NUKE build extensions
 
 Each project may have:
 
