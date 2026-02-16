@@ -119,10 +119,10 @@ internal sealed class QualifiedImageRefTests {
   }
 
   // -----------------------
-  // On (change registry)
+  // WithRegistry (change registry)
   // -----------------------
   [Test]
-  public async Task OnChangesRegistry() {
+  public async Task WithRegistryChangesRegistry() {
     var original = new PartialImageRef( "nginx", Tag.Latest ).Qualify();
     var updated = original.With( Registry.GitHub, new Namespace( "myorg" ) );
 
@@ -132,7 +132,7 @@ internal sealed class QualifiedImageRefTests {
   }
 
   [Test]
-  public async Task OnPreservesOtherProperties() {
+  public async Task WithRegistryPreservesOtherProperties() {
     var original = new PartialImageRef( "nginx", Tag.Latest ).Qualify();
     var updated = original.With( Registry.Localhost );
 
@@ -141,7 +141,7 @@ internal sealed class QualifiedImageRefTests {
   }
 
   [Test]
-  public async Task OnDoesNotMutateOriginal() {
+  public async Task WithRegistryDoesNotMutateOriginal() {
     var original = new PartialImageRef( "nginx", Tag.Latest ).Qualify();
     _ = original.With( Registry.GitHub, new Namespace( "myorg" ) );
 

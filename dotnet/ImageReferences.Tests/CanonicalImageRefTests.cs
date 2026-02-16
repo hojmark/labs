@@ -112,7 +112,7 @@ internal sealed class CanonicalImageRefTests {
   }
 
   [Test]
-  public async Task WithTagReplacesExistingTag() {
+  public async Task WithTagReplacesTag() {
     var original = new PartialImageRef( "nginx", Tag.Latest, digest: new Digest( ValidDigest ) ).Canonicalize();
     var updated = original.With( new Tag( "alpine" ) );
 
