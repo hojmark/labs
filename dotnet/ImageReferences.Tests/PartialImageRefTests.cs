@@ -1,4 +1,4 @@
-﻿using HLabs.ImageReferences.Tests.Components;
+using HLabs.ImageReferences.Tests.Components;
 using Semver;
 
 namespace HLabs.ImageReferences.Tests;
@@ -146,6 +146,110 @@ internal sealed class PartialImageRefTests {
   public async Task ParseCanonicalTest( string input, string expected ) {
     var parsed = input.Image();
     await Assert.That( parsed.ToString() ).IsEqualTo( expected );
+  }
+
+  // -----------------------
+  // Docker naming convention
+  // -----------------------
+  [Test]
+  public async Task ParseSingleComponentIsRepository() {
+    var parsed = PartialImageRef.Parse( "nginx" );
+    await Assert.That( parsed.Registry ).IsNull();
+    await Assert.That( parsed.Namespace ).IsNull();
+    await Assert.That( parsed.Repository!.ToString() ).IsEqualTo( "nginx" );
+  }
+
+  [Test]
+  public async Task ParseTwoComponentsWithoutDotsOrColonsIsNamespaceAndRepository() {
+    var parsed = PartialImageRef.Parse( "hojmark/drift" );
+    await Assert.That( parsed.Registry ).IsNull();
+    await Assert.That( parsed.Namespace!.ToString() ).IsEqualTo( "hojmark" );
+    await Assert.That( parsed.Repository!.ToString() ).IsEqualTo( "drift" );
+  }
+
+  [Test]
+  public async Task ParseTwoComponentsWithDotsIsRegistryAndRepository() {
+    var parsed = PartialImageRef.Parse( "ghcr.io/myapp" );
+    await Assert.That( parsed.Registry!.ToString() ).IsEqualTo( "ghcr.io" );
+    await Assert.That( parsed.Namespace ).IsNull();
+    await Assert.That( parsed.Repository!.ToString() ).IsEqualTo( "myapp" );
+  }
+
+  [Test]
+  public async Task ParseTwoComponentsWithColonIsRegistryAndRepository() {
+    var parsed = PartialImageRef.Parse( "localhost:5000/myapp" );
+    await Assert.That( parsed.Registry!.ToString() ).IsEqualTo( "localhost:5000" );
+    await Assert.That( parsed.Namespace ).IsNull();
+    await Assert.That( parsed.Repository!.ToString() ).IsEqualTo( "myapp" );
+  }
+
+  [Test]
+  public async Task ParseTwoComponentsWithLocalhostIsRegistryAndRepository() {
+    var parsed = PartialImageRef.Parse( "localhost/myapp" );
+    await Assert.That( parsed.Registry!.ToString() ).IsEqualTo( "localhost" );
+    await Assert.That( parsed.Namespace ).IsNull();
+    await Assert.That( parsed.Repository!.ToString() ).IsEqualTo( "myapp" );
+  }
+
+  [Test]
+  public async Task ParseTwoComponentsWithUppercaseLocalhostIsRegistryAndRepository() {
+    var parsed = PartialImageRef.Parse( "LOCALHOST/myapp" );
+    await Assert.That( parsed.Registry!.ToString() ).IsEqualTo( "localhost" );
+    await Assert.That( parsed.Namespace ).IsNull();
+    await Assert.That( parsed.Repository!.ToString() ).IsEqualTo( "myapp" );
+  }
+
+  [Test]
+  public async Task ParseThreeComponentsIsRegistryNamespaceAndRepository() {
+    var parsed = PartialImageRef.Parse( "docker.io/hojmark/drift" );
+    await Assert.That( parsed.Registry!.ToString() ).IsEqualTo( "docker.io" );
+    await Assert.That( parsed.Namespace!.ToString() ).IsEqualTo( "hojmark" );
+    await Assert.That( parsed.Repository!.ToString() ).IsEqualTo( "drift" );
+  }
+
+  [Test]
+  public async Task ParseNamespaceWithTag() {
+    var parsed = PartialImageRef.Parse( "hojmark/drift:latest" );
+    await Assert.That( parsed.Registry ).IsNull();
+    await Assert.That( parsed.Namespace!.ToString() ).IsEqualTo( "hojmark" );
+    await Assert.That( parsed.Repository!.ToString() ).IsEqualTo( "drift" );
+    await Assert.That( parsed.Tag!.ToString() ).IsEqualTo( "latest" );
+  }
+
+  [Test]
+  public async Task ParseNamespaceWithDigest() {
+    var parsed = PartialImageRef.Parse( $"hojmark/drift@{ValidDigest}" );
+    await Assert.That( parsed.Registry ).IsNull();
+    await Assert.That( parsed.Namespace!.ToString() ).IsEqualTo( "hojmark" );
+    await Assert.That( parsed.Repository!.ToString() ).IsEqualTo( "drift" );
+    await Assert.That( parsed.Digest!.ToString() ).IsEqualTo( ValidDigest );
+  }
+
+  [Test]
+  public async Task ParseRegistryWithoutNamespaceAndTag() {
+    var parsed = PartialImageRef.Parse( "ghcr.io/myapp:v1.0" );
+    await Assert.That( parsed.Registry!.ToString() ).IsEqualTo( "ghcr.io" );
+    await Assert.That( parsed.Namespace ).IsNull();
+    await Assert.That( parsed.Repository!.ToString() ).IsEqualTo( "myapp" );
+    await Assert.That( parsed.Tag!.ToString() ).IsEqualTo( "v1.0" );
+  }
+
+  [Test]
+  public async Task ParseFullyQualifiedWithTag() {
+    var parsed = PartialImageRef.Parse( "docker.io/library/nginx:1.25" );
+    await Assert.That( parsed.Registry!.ToString() ).IsEqualTo( "docker.io" );
+    await Assert.That( parsed.Namespace!.ToString() ).IsEqualTo( "library" );
+    await Assert.That( parsed.Repository!.ToString() ).IsEqualTo( "nginx" );
+    await Assert.That( parsed.Tag!.ToString() ).IsEqualTo( "1.25" );
+  }
+
+  [Test]
+  public async Task ParseComplexRegistryHost() {
+    var parsed = PartialImageRef.Parse( "my-registry.example.com:8080/myorg/myapp:v2" );
+    await Assert.That( parsed.Registry!.ToString() ).IsEqualTo( "my-registry.example.com:8080" );
+    await Assert.That( parsed.Namespace!.ToString() ).IsEqualTo( "myorg" );
+    await Assert.That( parsed.Repository!.ToString() ).IsEqualTo( "myapp" );
+    await Assert.That( parsed.Tag!.ToString() ).IsEqualTo( "v2" );
   }
 
   // -----------------------
@@ -315,6 +419,64 @@ internal sealed class PartialImageRefTests {
   // -----------------------
   // Qualify
   // -----------------------
+  [Test]
+  public async Task QualifyNamespaceRepositoryWithTag() {
+    var partial = "hojmark/drift".Image();
+    await Assert.That( partial.ToString() ).IsEqualTo( "hojmark/drift" );
+    var qualified = partial.Qualify( Tag.Latest );
+    await Assert.That( qualified.ToString() ).IsEqualTo( "docker.io/hojmark/drift:latest" );
+  }
+
+  [Test]
+  public async Task QualifySimpleRepositoryWithTag() {
+    var partial = "nginx".Image();
+    await Assert.That( partial.ToString() ).IsEqualTo( "nginx" );
+    var qualified = partial.Qualify( Tag.Latest );
+    await Assert.That( qualified.ToString() ).IsEqualTo( "docker.io/library/nginx:latest" );
+  }
+
+  [Test]
+  public async Task QualifyNamespaceRepositoryWithoutExplicitTag() {
+    var partial = "hojmark/drift".Image();
+    var qualified = partial.Qualify();
+    await Assert.That( qualified.ToString() ).IsEqualTo( "docker.io/hojmark/drift:latest" );
+  }
+
+  [Test]
+  public async Task QualifyPreservesExistingRegistry() {
+    var partial = "ghcr.io/myorg/myapp".Image();
+    var qualified = partial.Qualify( Tag.Latest );
+    await Assert.That( qualified.ToString() ).IsEqualTo( "ghcr.io/myorg/myapp:latest" );
+  }
+
+  [Test]
+  public async Task QualifyRegistryWithoutNamespace() {
+    var partial = "localhost:5000/myapp".Image();
+    var qualified = partial.Qualify( Tag.Dev );
+    await Assert.That( qualified.ToString() ).IsEqualTo( "localhost:5000/myapp:dev" );
+  }
+
+  [Test]
+  public async Task QualifyFullyQualifiedReference() {
+    var partial = "docker.io/hojmark/drift:1.0".Image();
+    var qualified = partial.Qualify();
+    await Assert.That( qualified.ToString() ).IsEqualTo( "docker.io/hojmark/drift:1.0" );
+  }
+
+  [Test]
+  public async Task QualifyWithTagOverridesExistingTag() {
+    var partial = "hojmark/drift:1.0".Image();
+    var qualified = partial.Qualify( new Tag( "2.0" ) );
+    await Assert.That( qualified.ToString() ).IsEqualTo( "docker.io/hojmark/drift:2.0" );
+  }
+
+  [Test]
+  public async Task QualifyWithRegistryAndTag() {
+    var partial = "myorg/myapp".Image();
+    var qualified = partial.Qualify( Registry.GitHub, Tag.Latest );
+    await Assert.That( qualified.ToString() ).IsEqualTo( "ghcr.io/myorg/myapp:latest" );
+  }
+
   [Test]
   public async Task QualifyWithoutRepositoryIncludesReferenceInErrorMessage() {
     var partial = new PartialImageRef( Registry.DockerHub, (Repository?) null!, new Digest( ValidDigest ) );
