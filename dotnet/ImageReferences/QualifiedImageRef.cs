@@ -98,7 +98,7 @@ public sealed record QualifiedImageRef : ImageRef {
   public CanonicalImageRef Canonicalize( CanonicalizationMode mode = CanonicalizationMode.ExcludeTag ) {
     if ( Digest is null ) {
       throw new InvalidOperationException(
-        "Cannot canonicalize without a digest. Use Canonicalize(digest) to provide one." );
+        $"Cannot canonicalize without a digest. Use Canonicalize(digest) to provide one. Reference: {this}" );
     }
 
     var tag = mode == CanonicalizationMode.MaintainTag ? Tag : null;

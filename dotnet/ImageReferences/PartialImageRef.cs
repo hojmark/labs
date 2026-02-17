@@ -258,11 +258,13 @@ public sealed partial record PartialImageRef : ImageRef {
     // Defaults
     var registry = Registry ?? Registry.DockerHub;
     var ns = Namespace ?? ( registry == Registry.DockerHub ? Namespace.Library : null );
-    var repo = Repository ?? throw new InvalidOperationException( "Repository is required" );
+    var repo = Repository ?? throw new InvalidOperationException( $"Repository is required for reference: {this}" );
     var tag = Tag ?? ( Digest is null ? Tag.Latest : null );
 
+    // Note: This check is currently unreachable with DefaultFilling mode since Tag.Latest is used as default.
+    // This will be relevant when RequireAll mode is fully implemented.
     if ( tag is null && Digest is null ) {
-      throw new InvalidOperationException( "Canonical image reference must have either a tag or a digest." );
+      throw new InvalidOperationException( $"Image reference must have either a tag or a digest. Reference: {this}" );
     }
 
     return new QualifiedImageRef( registry, ns, repo, tag, Digest );

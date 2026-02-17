@@ -3,7 +3,7 @@ using Semver;
 
 namespace HLabs.ImageReferences.Tests;
 
-internal sealed class PartialImageReferenceTests {
+internal sealed class PartialImageRefTests {
   private const string ValidDigest = "sha256:a3ed95caeb02ffe68cdd9fd84406680ae93d633cb16422d00e8a7c22955b46d4";
 
   // -----------------------
@@ -237,7 +237,7 @@ internal sealed class PartialImageReferenceTests {
   }
 
   // -----------------------
-  // Record `with` expressions
+  // Modifying using With
   // -----------------------
   [Test]
   public async Task WithTagReplacesTag() {
@@ -310,5 +310,24 @@ internal sealed class PartialImageReferenceTests {
     var original = new PartialImageRef( "nginx", Tag.Latest );
     _ = original.With( new Tag( "alpine" ) );
     await Assert.That( original.Tag ).IsEqualTo( Tag.Latest );
+  }
+
+  // -----------------------
+  // Qualify
+  // -----------------------
+  [Test]
+  public async Task QualifyWithoutRepositoryIncludesReferenceInErrorMessage() {
+    var partial = new PartialImageRef( Registry.DockerHub, (Repository?) null!, new Digest( ValidDigest ) );
+    var ex = Assert.Throws<InvalidOperationException>( () => partial.Qualify() );
+    await Assert.That( ex.Message ).Contains( $"docker.io/@{ValidDigest}" );
+  }
+
+  // TODO Implement
+  [Test]
+  [Explicit( "Implement!" )]
+  public async Task QualifyWithoutTagOrDigestIncludesReferenceInErrorMessage() {
+    var partial = new PartialImageRef( "nginx", Tag.Latest ).With( (Tag?) null );
+    var ex = Assert.Throws<InvalidOperationException>( () => partial.Qualify() );
+    await Assert.That( ex.Message ).Contains( "nginx" );
   }
 }

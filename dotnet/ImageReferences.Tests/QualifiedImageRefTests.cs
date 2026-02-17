@@ -176,6 +176,13 @@ internal sealed class QualifiedImageRefTests {
     Assert.Throws<InvalidOperationException>( () => qualified.Canonicalize() );
   }
 
+  [Test]
+  public async Task CanonicalizeWithoutDigestIncludesReferenceInErrorMessage() {
+    var qualified = new PartialImageRef( "nginx", Tag.Latest ).Qualify();
+    var ex = Assert.Throws<InvalidOperationException>( () => qualified.Canonicalize() );
+    await Assert.That( ex!.Message ).Contains( "docker.io/library/nginx:latest" );
+  }
+
   // -----------------------
   // Equality
   // -----------------------
