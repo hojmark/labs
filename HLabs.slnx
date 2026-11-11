@@ -14,7 +14,9 @@
     <File Path=".editorconfig" />
     <File Path="Directory.Build.props" />
     <File Path="Directory.Packages.props" />
+    <File Path="README.md" />
   </Folder>
+  <Project Path="dotnet/ImageReferences.Extensions.Fallout/ImageReferences.Extensions.Fallout.csproj" />
   <Project Path="dotnet/ImageReferences.Extensions.Nuke/ImageReferences.Extensions.Nuke.csproj" />
   <Project Path="dotnet/ImageReferences.Tests/ImageReferences.Tests.csproj" />
   <Project Path="dotnet/ImageReferences/ImageReferences.csproj" />
