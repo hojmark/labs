@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <Description>Fallout extensions for HLabs.ImageReferences</Description>
+    <PackageTags>Fallout Docker container containers</PackageTags>
+    <IsPackable>true</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Fallout.Common" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ImageReferences\ImageReferences.csproj" />
+  </ItemGroup>
+
+</Project>

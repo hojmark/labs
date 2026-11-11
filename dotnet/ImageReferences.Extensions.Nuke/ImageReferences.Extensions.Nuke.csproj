@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Description>NUKE extensions for HLabs.ImageReferences</Description>
-    <PackageTags>NUKE Docker container containers</PackageTags>
+    <Description>Fallout extensions for HLabs.ImageReferences</Description>
+    <PackageTags>Fallout Docker container containers</PackageTags>
     <IsPackable>true</IsPackable>
   </PropertyGroup>
 
